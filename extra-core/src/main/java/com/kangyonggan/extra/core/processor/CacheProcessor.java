@@ -41,8 +41,8 @@ public class CacheProcessor {
                 String className = handlePackageName.substring(handlePackageName.lastIndexOf(".") + 1);
                 JCTreeUtil.defineVariable(element, className, List.nil());
 
-                generateBlockCode(element, className, returnType);
                 generateReturnCode(element, className, returnType);
+                generateBlockCode(element, className, returnType);
             }
         }
     }
