@@ -34,6 +34,8 @@ public interface Constants {
 
     String METHOD_SET = "set";
 
+    String METHOD_DELETE = "delete";
+
     String VARIABLE_PREFIX = "_";
 
     String VARIABLE_CACHE_VALUE = VARIABLE_PREFIX + "cacheValue";
