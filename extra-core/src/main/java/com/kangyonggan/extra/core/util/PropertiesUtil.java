@@ -19,7 +19,6 @@ public class PropertiesUtil {
      * load resources properties
      *
      * @param resourceName
-     * @return
      */
     public static void init(String resourceName) {
         props = new Properties();
