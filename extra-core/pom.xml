@@ -38,6 +38,10 @@
             <systemPath>${java.home}/../lib/tools.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.kangyonggan</groupId>
             <artifactId>jcel</artifactId>
         </dependency>

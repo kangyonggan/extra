@@ -9,8 +9,8 @@ import com.kangyonggan.extra.core.handle.CacheHandle;
 public class RedisCacheHandle implements CacheHandle {
 
     @Override
-    public Object set(String key, Object value, Long expire) {
-        return value;
+    public Object set(String key, Object returnValue, Long expire) {
+        return returnValue;
     }
 
     @Override

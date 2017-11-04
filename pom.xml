@@ -46,6 +46,7 @@
 
         <tools.version>1.5.0</tools.version>
         <jcel.version>1.0</jcel.version>
+        <fastjson.version>1.2.8</fastjson.version>
     </properties>
 
     <build>
@@ -70,6 +71,11 @@
                 <groupId>sun.jdk</groupId>
                 <artifactId>tools</artifactId>
                 <version>${tools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.kangyonggan</groupId>

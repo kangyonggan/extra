@@ -15,9 +15,9 @@ public class MemoryCacheHandle implements CacheHandle {
     private volatile static Map<String, CacheItem> caches = new HashMap();
 
     @Override
-    public Object set(String key, Object value, Long expire) {
-        caches.put(key, new CacheItem(value, expire));
-        return value;
+    public Object set(String key, Object returnValue, Long expire) {
+        caches.put(key, new CacheItem(returnValue, expire));
+        return returnValue;
     }
 
     @Override

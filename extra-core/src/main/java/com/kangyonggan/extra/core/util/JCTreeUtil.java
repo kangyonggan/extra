@@ -223,4 +223,53 @@ public class JCTreeUtil {
     public static JCTree.JCExpression notNull(String varName) {
         return treeMaker.Binary(JCTree.Tag.NE, treeMaker.Ident(names.fromString(varName)), treeMaker.Literal(TypeTag.BOT, null));
     }
+
+    /**
+     * get the method's parameters
+     *
+     * @param element
+     */
+    public static List<JCTree.JCExpression> getParameters(Element element) {
+        final List<JCTree.JCExpression>[] params = new List[]{List.nil()};
+        JCTree tree = (JCTree) trees.getTree(element);
+
+        tree.accept(new TreeTranslator() {
+            public void visitMethodDef(JCTree.JCMethodDecl jcMethodDecl) {
+                for (JCTree.JCVariableDecl decl : jcMethodDecl.getParameters()) {
+                    params[0] = params[0].append(treeMaker.Ident(decl));
+                }
+                super.visitMethodDef(jcMethodDecl);
+            }
+        });
+
+        return params[0];
+    }
+
+    /**
+     * get the method's name
+     *
+     * @param element
+     */
+    public static JCTree.JCLiteral getMethodName(Element element) {
+        final JCTree.JCLiteral[] methodName = {null};
+        JCTree tree = (JCTree) trees.getTree(element);
+
+        tree.accept(new TreeTranslator() {
+            public void visitMethodDef(JCTree.JCMethodDecl jcMethodDecl) {
+                methodName[0] = treeMaker.Literal(jcMethodDecl.getName().toString());
+                super.visitMethodDef(jcMethodDecl);
+            }
+        });
+
+        return methodName[0];
+    }
+
+    /**
+     *
+     * @param element
+     * @return
+     */
+    public static String getPackageName(Element element) {
+        return  ((JCTree.JCClassDecl) trees.getTree(element.getEnclosingElement())).sym.toString();
+    }
 }

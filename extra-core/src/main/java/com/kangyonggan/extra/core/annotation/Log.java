@@ -21,6 +21,6 @@ public @interface Log {
      *
      * @return
      */
-    Class<? extends LogHandle> value() default ConsoleLogHandler.class;
+    Class<? extends LogHandle> handle() default ConsoleLogHandler.class;
 
 }

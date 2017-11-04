@@ -36,6 +36,10 @@ public interface Constants {
 
     String METHOD_DELETE = "delete";
 
+    String METHOD_LOG_BEFORE = "logBefore";
+
+    String METHOD_LOG_AFTER = "logAfter";
+
     String VARIABLE_PREFIX = "_";
 
     String VARIABLE_CACHE_VALUE = VARIABLE_PREFIX + "cacheValue";

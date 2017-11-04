@@ -6,7 +6,7 @@ package com.kangyonggan.extra.core.handle;
  */
 public interface CacheHandle {
 
-    Object set(String key, Object value, Long expire);
+    Object set(String key, Object returnValue, Long expire);
 
     Object get(String key);
 
