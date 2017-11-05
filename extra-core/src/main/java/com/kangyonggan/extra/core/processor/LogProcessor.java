@@ -1,6 +1,5 @@
 package com.kangyonggan.extra.core.processor;
 
-import com.kangyonggan.extra.core.annotation.Cache;
 import com.kangyonggan.extra.core.annotation.Log;
 import com.kangyonggan.extra.core.model.Constants;
 import com.kangyonggan.extra.core.util.JCTreeUtil;
@@ -61,7 +60,7 @@ public class LogProcessor {
             @Override
             public void visitAnnotation(JCTree.JCAnnotation jcAnnotation) {
                 if (isTargetMethod) {
-                    boolean isTargetAnno = Cache.class.getSimpleName().equals(jcAnnotation.annotationType.toString());
+                    boolean isTargetAnno = Log.class.getSimpleName().equals(jcAnnotation.annotationType.toString());
                     if (isTargetAnno) {
                         isTargetMethod = true;
                     }
