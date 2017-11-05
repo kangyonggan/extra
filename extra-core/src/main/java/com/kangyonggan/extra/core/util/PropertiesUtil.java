@@ -33,7 +33,7 @@ public class PropertiesUtil {
         }
 
         if (StringUtil.isEmpty(props.getProperty(Constants.CACHE_EXPIRE))) {
-            props.setProperty(Constants.CACHE_EXPIRE, String.valueOf(Long.MAX_VALUE));
+            props.setProperty(Constants.CACHE_EXPIRE, String.valueOf(315360000000L));
         }
 
         if (StringUtil.isEmpty(props.getProperty(Constants.CACHE_HANDLE))) {

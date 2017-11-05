@@ -34,11 +34,11 @@ public @interface Cache {
     String prefix() default StringUtil.EXPTY;
 
     /**
-     * expire time，unit is milliseconds， default is no expire
+     * expire time，unit is milliseconds， default is 10 years
      *
      * @return
      */
-    long expire() default Long.MAX_VALUE;
+    long expire() default 315360000000L;
 
     /**
      * cache handle, default is memory cache
