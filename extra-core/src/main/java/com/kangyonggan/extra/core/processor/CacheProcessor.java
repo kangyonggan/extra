@@ -61,7 +61,9 @@ public class CacheProcessor {
 
             @Override
             public void visitMethodDef(JCTree.JCMethodDecl jcMethodDecl) {
-                isTargetMethod = element.toString().equals(jcMethodDecl.sym.toString());
+                if (jcMethodDecl.sym != null) {
+                    isTargetMethod = element.toString().equals(jcMethodDecl.sym.toString());
+                }
                 super.visitMethodDef(jcMethodDecl);
             }
 

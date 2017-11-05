@@ -46,7 +46,7 @@ public class JCTreeUtil {
         tree.accept(new TreeTranslator() {
             @Override
             public void visitMethodDef(JCTree.JCMethodDecl jcMethodDecl) {
-                if (element.toString().equals(jcMethodDecl.sym.toString())) {
+                if (jcMethodDecl.sym != null && element.toString().equals(jcMethodDecl.sym.toString())) {
                     returnType[0] = jcMethodDecl.restype;
                 }
                 super.visitMethodDef(jcMethodDecl);
@@ -155,13 +155,15 @@ public class JCTreeUtil {
 
                     // not inner class, variable is static
                     int modifiers = Flags.PRIVATE;
-                    if (jcClassDecl.sym.flatname.toString().equals(jcClassDecl.sym.fullname.toString())) {
-                        modifiers = modifiers | Flags.STATIC;
-                    }
+                    if (jcClassDecl.sym != null) {
+                        if (jcClassDecl.sym.flatname.toString().equals(jcClassDecl.sym.fullname.toString())) {
+                            modifiers = modifiers | Flags.STATIC;
+                        }
 
-                    JCTree.JCVariableDecl variableDecl = treeMaker.VarDef(treeMaker.Modifiers(modifiers), names.fromString(varName), typeExpr, newClassExpr);
-                    statements.append(variableDecl);
-                    jcClassDecl.defs = statements.toList();
+                        JCTree.JCVariableDecl variableDecl = treeMaker.VarDef(treeMaker.Modifiers(modifiers), names.fromString(varName), typeExpr, newClassExpr);
+                        statements.append(variableDecl);
+                        jcClassDecl.defs = statements.toList();
+                    }
                 }
 
                 super.visitClassDef(jcClassDecl);
@@ -256,7 +258,9 @@ public class JCTreeUtil {
 
         tree.accept(new TreeTranslator() {
             public void visitMethodDef(JCTree.JCMethodDecl jcMethodDecl) {
-                methodName[0] = treeMaker.Literal(jcMethodDecl.getName().toString());
+                if (methodName[0] == null) {
+                    methodName[0] = treeMaker.Literal(jcMethodDecl.getName().toString());
+                }
                 super.visitMethodDef(jcMethodDecl);
             }
         });
