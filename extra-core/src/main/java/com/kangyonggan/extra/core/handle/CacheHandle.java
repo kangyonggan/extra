@@ -10,5 +10,5 @@ public interface CacheHandle {
 
     Object get(String key);
 
-    void delete(String key);
+    void delete(String... keys);
 }

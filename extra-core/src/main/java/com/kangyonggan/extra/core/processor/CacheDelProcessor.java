@@ -58,16 +58,28 @@ public class CacheDelProcessor {
                  * create code: xxxHandle.delete(key);
                  */
                 String key = JCTreeUtil.getAnnotationParameter(element, CacheDel.class, Constants.CACHE_KEY_NAME);
-                JCTree.JCExpression keyExpr = KeyExpressionUtil.parse(key);
+                String keyArr[] = key.split("\\|\\|");
+                JCTree.JCExpression keyExpr[] = new JCTree.JCExpression[keyArr.length];
+                for (int i = 0; i < keyArr.length; i++) {
+                    keyExpr[i] = KeyExpressionUtil.parse(keyArr[i]);
+                }
 
                 String prefix = JCTreeUtil.getAnnotationParameter(element, CacheDel.class, Constants.CACHE_PREFIX_NAME, PropertiesUtil.getCachePrefix());
                 if (StringUtil.isNotEmpty(prefix)) {
                     JCTree.JCExpression prefixExpr = treeMaker.Literal(prefix);
-                    keyExpr = treeMaker.Binary(JCTree.Tag.PLUS, prefixExpr, keyExpr);
+                    for (int i = 0; i < keyArr.length; i++) {
+                        keyExpr[i] = treeMaker.Binary(JCTree.Tag.PLUS, prefixExpr, keyExpr[i]);
+                    }
+                }
+
+
+                ListBuffer<JCTree.JCExpression> keyExprList = new ListBuffer();
+                for (int i = 0; i < keyArr.length; i++) {
+                    keyExprList.append(keyExpr[i]);
                 }
 
                 JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString(Constants.METHOD_DELETE));
-                JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(keyExpr));
+                JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, keyExprList.toList());
                 statements.append(treeMaker.Exec(methodInvocation));
 
                 for (JCTree.JCStatement jcStatement : tree.getStatements()) {

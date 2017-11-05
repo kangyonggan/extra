@@ -40,7 +40,9 @@ public class MemoryCacheHandle implements CacheHandle {
     }
 
     @Override
-    public void delete(String key) {
-        caches.remove(key);
+    public void delete(String... keys) {
+        for (String key : keys) {
+            caches.remove(key);
+        }
     }
 }

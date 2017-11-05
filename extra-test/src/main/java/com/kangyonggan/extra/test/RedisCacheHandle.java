@@ -19,7 +19,7 @@ public class RedisCacheHandle implements CacheHandle {
     }
 
     @Override
-    public void delete(String key) {
+    public void delete(String... keys) {
 
     }
 }
