@@ -128,6 +128,17 @@ public class LogProcessor {
                     statements.append(tree.getStatements().get(i));
                 }
 
+                JCTree.JCExpression returnType = JCTreeUtil.getReturnType(element);
+                if (returnType == null || returnType.toString().equals(Constants.RETURN_VOID)) {
+                    /**
+                     * create code: xxxHandle.logAfter(methodName, null);
+                     */
+                    fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString("logAfter"));
+                    methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(JCTreeUtil.getMethodName(element), treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "methodStartTime")), JCTreeUtil.getNull()));
+
+                    statements.append(treeMaker.Exec(methodInvocation));
+                }
+
                 result = treeMaker.Block(0, statements.toList());
             }
         });
