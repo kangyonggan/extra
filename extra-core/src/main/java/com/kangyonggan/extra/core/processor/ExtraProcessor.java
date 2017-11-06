@@ -17,6 +17,7 @@ import java.util.Set;
  * @since 10/31/17
  */
 @SupportedAnnotationTypes({
+        "com.kangyonggan.extra.core.annotation.LimitCount",
         "com.kangyonggan.extra.core.annotation.Cache",
         "com.kangyonggan.extra.core.annotation.CacheDel",
         "com.kangyonggan.extra.core.annotation.Log"
@@ -41,6 +42,8 @@ public class ExtraProcessor extends AbstractProcessor {
      */
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment env) {
+        // 这些processor的顺序不可变
+        LimitCountProcessor.process(annotations, env);
         CacheProcessor.process(annotations, env);
         CacheDelProcessor.process(annotations, env);
         LogProcessor.process(annotations, env);

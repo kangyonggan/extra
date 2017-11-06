@@ -1,7 +1,8 @@
 package com.kangyonggan.extra.core.util;
 
-import com.kangyonggan.extra.core.handle.ConsoleLogHandler;
-import com.kangyonggan.extra.core.handle.MemoryCacheHandle;
+import com.kangyonggan.extra.core.handle.impl.ConsoleLogHandler;
+import com.kangyonggan.extra.core.handle.impl.MemoryCacheHandle;
+import com.kangyonggan.extra.core.handle.impl.MemoryLimitCountHandle;
 import com.kangyonggan.extra.core.model.Constants;
 
 import java.io.InputStream;
@@ -43,6 +44,10 @@ public class PropertiesUtil {
         if (StringUtil.isEmpty(props.getProperty(Constants.LOG_HANDLE))) {
             props.setProperty(Constants.LOG_HANDLE, ConsoleLogHandler.class.getName());
         }
+
+        if (StringUtil.isEmpty(props.getProperty(Constants.LIMIT_COUNT_HANDLE))) {
+            props.setProperty(Constants.LIMIT_COUNT_HANDLE, MemoryLimitCountHandle.class.getName());
+        }
     }
 
     public static String getCachePrefix() {
@@ -59,6 +64,10 @@ public class PropertiesUtil {
 
     public static String getLogHandle() {
         return props.getProperty(Constants.LOG_HANDLE);
+    }
+
+    public static String getLimitCountHandle() {
+        return props.getProperty(Constants.LIMIT_COUNT_HANDLE);
     }
 
 }

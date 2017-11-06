@@ -1,6 +1,7 @@
-package com.kangyonggan.extra.core.handle;
+package com.kangyonggan.extra.core.handle.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.kangyonggan.extra.core.handle.LogHandle;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

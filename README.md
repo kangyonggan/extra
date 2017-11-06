@@ -6,7 +6,7 @@
 <dependency>
     <groupId>com.kangyonggan</groupId>
     <artifactId>extra-core</artifactId>
-    <version>1.4</version>
+    <version>1.5</version>
 </dependency>
 ```
 
@@ -65,17 +65,20 @@ public class Demo01 {
 `/resources/extra.properties`
 
 ```
-## default value is ""
-#cache.prefix=extra:
-#
-## default value is 315360000000 ms
-#cache.expire=1800000
-#
-## default is com.kangyonggan.extra.core.handle.MemoryCacheHandle
-#cache.handle=com.kangyonggan.extra.test.RedisCacheHandle
-#
-## default is com.kangyonggan.extra.core.handle.ConsoleLogHandle
-#log.handle=com.kangyonggan.extra.test.Log4j2LogHandle
+# default value is ""
+cache.prefix=extra:
+
+# default value is Long.MAX_VALUE
+cache.expire=1800000
+
+# default is com.kangyonggan.extra.core.handle.impl.MemoryCacheHandle
+cache.handle=com.kangyonggan.extra.test.RedisCacheHandle
+
+# default is com.kangyonggan.extra.core.handle.impl.ConsoleLogHandle
+log.handle=com.kangyonggan.extra.test.Log4j2LogHandle
+
+# default is com.kangyonggan.extra.core.handle.impl.MemoryLimitCountHandle
+#limit.count.handle=com.kangyonggan.extra.test.RedisLimitCountHandle
 ```
 
 ### Annotations
@@ -90,6 +93,10 @@ public class Demo01 {
 1. Log the method input parameters.
 2. Log the method return value.
 3. Log the method used time.
+
+#### @LimitCount
+1. Limit the method called count during the interval time.
+2. When called count over max count, call alarm method.
 
 ### Code And Demo
 [https://github.com/kangyonggan/extra.git](https://github.com/kangyonggan/extra.git)

@@ -83,9 +83,7 @@ public class JCTreeUtil {
         for (ExecutableElement ee : annotationMirror.getElementValues().keySet()) {
             if (ee.getSimpleName().toString().equals(name)) {
                 Object value = annotationMirror.getElementValues().get(ee).getValue();
-                if (value instanceof String) {
-                    return new String[]{(String) annotationMirror.getElementValues().get(ee).getValue()};
-                } else if (value instanceof List) {
+                if (value instanceof List) {
                     List list = (List) value;
                     String result[] = new String[list.size()];
                     for (int i = 0; i < list.size(); i++) {
@@ -93,6 +91,8 @@ public class JCTreeUtil {
                         result[i] = (String) constant.getValue();
                     }
                     return result;
+                } else {
+                    return new String[]{annotationMirror.getElementValues().get(ee).getValue().toString()};
                 }
 
             }
@@ -287,5 +287,31 @@ public class JCTreeUtil {
      */
     public static String getPackageName(Element element) {
         return ((JCTree.JCClassDecl) trees.getTree(element.getEnclosingElement())).sym.toString();
+    }
+
+    /**
+     * @param type
+     * @return
+     */
+    public static JCTree.JCExpression getTypeDefaultValue(JCTree.JCExpression type) {
+        String tp = type.toString();
+        if (tp.equals("byte")) {
+            return treeMaker.Literal(0);
+        } else if (tp.equals("short")) {
+            return treeMaker.Literal(0);
+        } else if (tp.equals("int")) {
+            return treeMaker.Literal(0);
+        } else if (tp.equals("long")) {
+            return treeMaker.Literal(0);
+        } else if (tp.equals("float")) {
+            return treeMaker.Literal(0);
+        } else if (tp.equals("double")) {
+            return treeMaker.Literal(0);
+        } else if (tp.equals("char")) {
+            return treeMaker.Literal(0);
+        } else if (tp.equals("boolean")) {
+            return treeMaker.Literal(false);
+        }
+        return getNull();
     }
 }

@@ -26,6 +26,14 @@ public interface Constants {
 
     String LOG_HANDLE_NAME = "handle";
 
+    String LIMIT_COUNT_INTERVAL_NAME = "interval";
+
+    String LIMIT_COUNT_COUNT_NAME = "count";
+
+    String LIMIT_COUNT_HANDLE = "limit.count.handle";
+
+    String LIMIT_COUNT_HANDLE_NAME = "handle";
+
     String RETURN_VOID = "void";
 
     String OBJECT_NAME = "Object";
@@ -39,6 +47,8 @@ public interface Constants {
     String METHOD_LOG_BEFORE = "logBefore";
 
     String METHOD_LOG_AFTER = "logAfter";
+
+    String METHOD_LIMIT = "limit";
 
     String VARIABLE_PREFIX = "_";
 

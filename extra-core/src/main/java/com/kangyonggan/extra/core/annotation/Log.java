@@ -1,6 +1,6 @@
 package com.kangyonggan.extra.core.annotation;
 
-import com.kangyonggan.extra.core.handle.ConsoleLogHandler;
+import com.kangyonggan.extra.core.handle.impl.ConsoleLogHandler;
 import com.kangyonggan.extra.core.handle.LogHandle;
 
 import java.lang.annotation.ElementType;

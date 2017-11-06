@@ -1,7 +1,7 @@
 package com.kangyonggan.extra.core.annotation;
 
 import com.kangyonggan.extra.core.handle.CacheHandle;
-import com.kangyonggan.extra.core.handle.MemoryCacheHandle;
+import com.kangyonggan.extra.core.handle.impl.MemoryCacheHandle;
 import com.kangyonggan.extra.core.util.StringUtil;
 
 import java.lang.annotation.ElementType;
