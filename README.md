@@ -6,7 +6,7 @@
 <dependency>
     <groupId>com.kangyonggan</groupId>
     <artifactId>extra-core</artifactId>
-    <version>1.5</version>
+    <version>1.6</version>
 </dependency>
 ```
 
@@ -68,7 +68,7 @@ public class Demo01 {
 # default value is ""
 cache.prefix=extra:
 
-# default value is Long.MAX_VALUE
+# default value is 10 years
 cache.expire=1800000
 
 # default is com.kangyonggan.extra.core.handle.impl.MemoryCacheHandle
@@ -77,8 +77,17 @@ cache.handle=com.kangyonggan.extra.test.RedisCacheHandle
 # default is com.kangyonggan.extra.core.handle.impl.ConsoleLogHandle
 log.handle=com.kangyonggan.extra.test.Log4j2LogHandle
 
-# default is com.kangyonggan.extra.core.handle.impl.MemoryLimitCountHandle
-#limit.count.handle=com.kangyonggan.extra.test.RedisLimitCountHandle
+# default is false
+count.interrupt=false
+
+# default is com.kangyonggan.extra.core.handle.impl.MemoryCountHandle
+#count.handle=com.kangyonggan.extra.test.RedisCountHandle
+
+# default is false
+frequency.interrupt=false
+
+# default is com.kangyonggan.extra.core.handle.impl.MemoryFrequencyHandle
+#frequency.handle=com.kangyonggan.extra.test.RedisFrequencyHandle
 ```
 
 ### Annotations
@@ -94,9 +103,13 @@ log.handle=com.kangyonggan.extra.test.Log4j2LogHandle
 2. Log the method return value.
 3. Log the method used time.
 
-#### @LimitCount
+#### @Count
 1. Limit the method called count during the interval time.
 2. When called count over max count, call alarm method.
+
+#### @Frequency
+1. During interval times can called method one times.
+2. When called frequency, call alarm method.
 
 ### Code And Demo
 [https://github.com/kangyonggan/extra.git](https://github.com/kangyonggan/extra.git)

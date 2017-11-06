@@ -1,7 +1,7 @@
 package com.kangyonggan.extra.core.annotation;
 
-import com.kangyonggan.extra.core.handle.LimitCountHandle;
-import com.kangyonggan.extra.core.handle.impl.MemoryLimitCountHandle;
+import com.kangyonggan.extra.core.handle.CountHandle;
+import com.kangyonggan.extra.core.handle.impl.MemoryCountHandle;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,14 +9,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * limit method called count
+ * method called count
  *
  * @author kangyonggan
  * @since 11/6/17
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.METHOD)
-public @interface LimitCount {
+public @interface Count {
 
     /**
      * method called interval, unit is ms
@@ -33,10 +33,17 @@ public @interface LimitCount {
     int count();
 
     /**
-     * limit count handle, default is memory limit count handle
+     * when over count, is interrupt
      *
      * @return
      */
-    Class<? extends LimitCountHandle> handle() default MemoryLimitCountHandle.class;
+    boolean interrupt() default false;
+
+    /**
+     * count handle, default is memory count handle
+     *
+     * @return
+     */
+    Class<? extends CountHandle> handle() default MemoryCountHandle.class;
 
 }

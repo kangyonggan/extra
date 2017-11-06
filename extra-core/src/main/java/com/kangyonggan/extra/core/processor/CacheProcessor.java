@@ -35,7 +35,7 @@ public class CacheProcessor {
                     return;
                 }
 
-                String handlePackageName = JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_HANDLE_NAME, PropertiesUtil.getCacheHandle())[0];
+                String handlePackageName = (String) JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_HANDLE_NAME, PropertiesUtil.getCacheHandle());
                 JCTreeUtil.importPackage(element, handlePackageName);
 
                 String className = handlePackageName.substring(handlePackageName.lastIndexOf(".") + 1);
@@ -88,17 +88,17 @@ public class CacheProcessor {
                 /**
                  * create code: return (ReturnType) xxxHandle.set(key, returnValue, expire);
                  */
-                String key = JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_KEY_NAME)[0];
+                String key = (String) JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_KEY_NAME);
                 JCTree.JCExpression keyExpr = KeyExpressionUtil.parse(key);
 
-                String prefix = JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_PREFIX_NAME, PropertiesUtil.getCachePrefix())[0];
+                String prefix = (String) JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_PREFIX_NAME, PropertiesUtil.getCachePrefix());
                 if (StringUtil.isNotEmpty(prefix)) {
                     JCTree.JCExpression prefixExpr = treeMaker.Literal(prefix);
                     keyExpr = treeMaker.Binary(JCTree.Tag.PLUS, prefixExpr, keyExpr);
                 }
 
-                String expire = JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_EXPIRE_NAME, PropertiesUtil.getCacheExpire())[0];
-                JCTree.JCLiteral expireExpr = treeMaker.Literal(Long.parseLong(expire));
+                Long expire = (Long) JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_EXPIRE_NAME, PropertiesUtil.getCacheExpire());
+                JCTree.JCLiteral expireExpr = treeMaker.Literal(expire);
 
                 JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString(Constants.METHOD_SET));
                 JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(keyExpr, jcReturn.getExpression(), expireExpr));
@@ -127,10 +127,10 @@ public class CacheProcessor {
                 /**
                  * create code: Object _cacheValue = xxxHandle.get(key);
                  */
-                String key = JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_KEY_NAME)[0];
+                String key = (String) JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_KEY_NAME);
                 JCTree.JCExpression keyExpr = KeyExpressionUtil.parse(key);
 
-                String prefix = JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_PREFIX_NAME, PropertiesUtil.getCachePrefix())[0];
+                String prefix = (String) JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_PREFIX_NAME, PropertiesUtil.getCachePrefix());
                 if (StringUtil.isNotEmpty(prefix)) {
                     JCTree.JCExpression prefixExpr = treeMaker.Literal(prefix);
                     keyExpr = treeMaker.Binary(JCTree.Tag.PLUS, prefixExpr, keyExpr);

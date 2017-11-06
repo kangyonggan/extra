@@ -2,7 +2,8 @@ package com.kangyonggan.extra.core.util;
 
 import com.kangyonggan.extra.core.handle.impl.ConsoleLogHandler;
 import com.kangyonggan.extra.core.handle.impl.MemoryCacheHandle;
-import com.kangyonggan.extra.core.handle.impl.MemoryLimitCountHandle;
+import com.kangyonggan.extra.core.handle.impl.MemoryCountHandle;
+import com.kangyonggan.extra.core.handle.impl.MemoryFrequencyHandle;
 import com.kangyonggan.extra.core.model.Constants;
 
 import java.io.InputStream;
@@ -45,8 +46,20 @@ public class PropertiesUtil {
             props.setProperty(Constants.LOG_HANDLE, ConsoleLogHandler.class.getName());
         }
 
-        if (StringUtil.isEmpty(props.getProperty(Constants.LIMIT_COUNT_HANDLE))) {
-            props.setProperty(Constants.LIMIT_COUNT_HANDLE, MemoryLimitCountHandle.class.getName());
+        if (StringUtil.isEmpty(props.getProperty(Constants.COUNT_INTERRUPT))) {
+            props.setProperty(Constants.COUNT_INTERRUPT, String.valueOf(false));
+        }
+
+        if (StringUtil.isEmpty(props.getProperty(Constants.COUNT_HANDLE))) {
+            props.setProperty(Constants.COUNT_HANDLE, MemoryCountHandle.class.getName());
+        }
+
+        if (StringUtil.isEmpty(props.getProperty(Constants.FREQUENCY_INTERRUPT))) {
+            props.setProperty(Constants.FREQUENCY_INTERRUPT, String.valueOf(false));
+        }
+
+        if (StringUtil.isEmpty(props.getProperty(Constants.FREQUENCY_HANDLE))) {
+            props.setProperty(Constants.FREQUENCY_HANDLE, MemoryFrequencyHandle.class.getName());
         }
     }
 
@@ -54,8 +67,8 @@ public class PropertiesUtil {
         return props.getProperty(Constants.CACHE_PREFIX);
     }
 
-    public static String getCacheExpire() {
-        return props.getProperty(Constants.CACHE_EXPIRE);
+    public static Long getCacheExpire() {
+        return Long.parseLong(props.getProperty(Constants.CACHE_EXPIRE));
     }
 
     public static String getCacheHandle() {
@@ -66,8 +79,20 @@ public class PropertiesUtil {
         return props.getProperty(Constants.LOG_HANDLE);
     }
 
-    public static String getLimitCountHandle() {
-        return props.getProperty(Constants.LIMIT_COUNT_HANDLE);
+    public static boolean getCountInterrupt() {
+        return Boolean.parseBoolean(props.getProperty(Constants.COUNT_INTERRUPT));
+    }
+
+    public static String getCountHandle() {
+        return props.getProperty(Constants.COUNT_HANDLE);
+    }
+
+    public static boolean getFrequencyInterrupt() {
+        return Boolean.parseBoolean(props.getProperty(Constants.FREQUENCY_INTERRUPT));
+    }
+
+    public static String getFrequencyHandle() {
+        return props.getProperty(Constants.FREQUENCY_HANDLE);
     }
 
 }

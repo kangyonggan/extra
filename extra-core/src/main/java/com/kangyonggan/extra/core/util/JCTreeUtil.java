@@ -16,6 +16,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
+import java.lang.reflect.Type;
 
 /**
  * @author kangyonggan
@@ -63,7 +64,7 @@ public class JCTreeUtil {
      * @param name
      * @return
      */
-    public static String[] getAnnotationParameter(Element element, Class annoClass, String name) {
+    public static Object getAnnotationParameter(Element element, Class annoClass, String name) {
         return getAnnotationParameter(element, annoClass, name, StringUtil.EXPTY);
     }
 
@@ -74,31 +75,33 @@ public class JCTreeUtil {
      * @param defaultValue
      * @return
      */
-    public static String[] getAnnotationParameter(Element element, Class annoClass, String name, String defaultValue) {
+    public static Object getAnnotationParameter(Element element, Class annoClass, String name, Object defaultValue) {
         AnnotationMirror annotationMirror = JCTreeUtil.getAnnotationMirror(element, annoClass.getName());
         if (annotationMirror == null) {
-            return new String[]{defaultValue};
+            return defaultValue;
         }
 
         for (ExecutableElement ee : annotationMirror.getElementValues().keySet()) {
             if (ee.getSimpleName().toString().equals(name)) {
                 Object value = annotationMirror.getElementValues().get(ee).getValue();
-                if (value instanceof List) {
+                if (value instanceof List) {// array
                     List list = (List) value;
                     String result[] = new String[list.size()];
                     for (int i = 0; i < list.size(); i++) {
                         Attribute.Constant constant = (Attribute.Constant) list.get(i);
+                        // this value type possible not String
                         result[i] = (String) constant.getValue();
                     }
                     return result;
-                } else {
-                    return new String[]{annotationMirror.getElementValues().get(ee).getValue().toString()};
+                } else if (value instanceof com.sun.tools.javac.code.Type.ClassType) {
+                    return ((com.sun.tools.javac.code.Type.ClassType) value).toString();
                 }
 
+                return value;
             }
         }
 
-        return new String[]{defaultValue};
+        return defaultValue;
     }
 
     /**

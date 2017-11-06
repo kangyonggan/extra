@@ -26,13 +26,27 @@ public interface Constants {
 
     String LOG_HANDLE_NAME = "handle";
 
-    String LIMIT_COUNT_INTERVAL_NAME = "interval";
+    String COUNT_INTERVAL_NAME = "interval";
 
-    String LIMIT_COUNT_COUNT_NAME = "count";
+    String COUNT_COUNT_NAME = "count";
 
-    String LIMIT_COUNT_HANDLE = "limit.count.handle";
+    String COUNT_INTERRUPT = "count.interrupt";
 
-    String LIMIT_COUNT_HANDLE_NAME = "handle";
+    String COUNT_INTERRUPT_NAME = "interrupt";
+
+    String COUNT_HANDLE = "count.handle";
+
+    String COUNT_HANDLE_NAME = "handle";
+
+    String FREQUENCY_INTERVAL_NAME = "interval";
+
+    String FREQUENCY_INTERRUPT = "frequency.interrupt";
+
+    String FREQUENCY_INTERRUPT_NAME = "interrupt";
+
+    String FREQUENCY_HANDLE_NAME = "handle";
+
+    String FREQUENCY_HANDLE = "frequency.handle";
 
     String RETURN_VOID = "void";
 

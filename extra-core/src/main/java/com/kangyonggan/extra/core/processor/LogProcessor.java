@@ -28,7 +28,7 @@ public class LogProcessor {
     public static void process(Set<? extends TypeElement> annotations, RoundEnvironment env) {
         for (Element element : env.getElementsAnnotatedWith(Log.class)) {
             if (element.getKind() == ElementKind.METHOD) {
-                String handlePackageName = JCTreeUtil.getAnnotationParameter(element, Log.class, Constants.LOG_HANDLE_NAME, PropertiesUtil.getLogHandle())[0];
+                String handlePackageName = (String) JCTreeUtil.getAnnotationParameter(element, Log.class, Constants.LOG_HANDLE_NAME, PropertiesUtil.getLogHandle());
                 JCTreeUtil.importPackage(element, handlePackageName);
 
                 String className = handlePackageName.substring(handlePackageName.lastIndexOf(".") + 1);
@@ -138,7 +138,7 @@ public class LogProcessor {
                                 /**
                                  * create code: xxxHandle.logAfter(methodName, null);
                                  */
-                                fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString("logAfter"));
+                                fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString(Constants.METHOD_LOG_AFTER));
                                 methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(JCTreeUtil.getMethodName(element), treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "methodStartTime")), JCTreeUtil.getNull()));
 
                                 statements.append(treeMaker.Exec(methodInvocation));
@@ -148,7 +148,7 @@ public class LogProcessor {
                                 /**
                                  * create code: xxxHandle.logAfter(methodName, null);
                                  */
-                                fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString("logAfter"));
+                                fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString(Constants.METHOD_LOG_AFTER));
                                 methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(JCTreeUtil.getMethodName(element), treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "methodStartTime")), JCTreeUtil.getNull()));
 
                                 statements.append(treeMaker.Exec(methodInvocation));
