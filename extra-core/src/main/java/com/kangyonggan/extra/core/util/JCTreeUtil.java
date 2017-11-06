@@ -3,6 +3,7 @@ package com.kangyonggan.extra.core.util;
 import com.kangyonggan.extra.core.model.Constants;
 import com.sun.source.tree.Tree;
 import com.sun.source.util.Trees;
+import com.sun.tools.javac.code.Attribute;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.TypeTag;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
@@ -62,7 +63,7 @@ public class JCTreeUtil {
      * @param name
      * @return
      */
-    public static String getAnnotationParameter(Element element, Class annoClass, String name) {
+    public static String[] getAnnotationParameter(Element element, Class annoClass, String name) {
         return getAnnotationParameter(element, annoClass, name, StringUtil.EXPTY);
     }
 
@@ -73,19 +74,31 @@ public class JCTreeUtil {
      * @param defaultValue
      * @return
      */
-    public static String getAnnotationParameter(Element element, Class annoClass, String name, String defaultValue) {
+    public static String[] getAnnotationParameter(Element element, Class annoClass, String name, String defaultValue) {
         AnnotationMirror annotationMirror = JCTreeUtil.getAnnotationMirror(element, annoClass.getName());
         if (annotationMirror == null) {
-            return defaultValue;
+            return new String[]{defaultValue};
         }
 
         for (ExecutableElement ee : annotationMirror.getElementValues().keySet()) {
             if (ee.getSimpleName().toString().equals(name)) {
-                return annotationMirror.getElementValues().get(ee).getValue().toString();
+                Object value = annotationMirror.getElementValues().get(ee).getValue();
+                if (value instanceof String) {
+                    return new String[]{(String) annotationMirror.getElementValues().get(ee).getValue()};
+                } else if (value instanceof List) {
+                    List list = (List) value;
+                    String result[] = new String[list.size()];
+                    for (int i = 0; i < list.size(); i++) {
+                        Attribute.Constant constant = (Attribute.Constant) list.get(i);
+                        result[i] = (String) constant.getValue();
+                    }
+                    return result;
+                }
+
             }
         }
 
-        return defaultValue;
+        return new String[]{defaultValue};
     }
 
     /**
@@ -269,11 +282,10 @@ public class JCTreeUtil {
     }
 
     /**
-     *
      * @param element
      * @return
      */
     public static String getPackageName(Element element) {
-        return  ((JCTree.JCClassDecl) trees.getTree(element.getEnclosingElement())).sym.toString();
+        return ((JCTree.JCClassDecl) trees.getTree(element.getEnclosingElement())).sym.toString();
     }
 }

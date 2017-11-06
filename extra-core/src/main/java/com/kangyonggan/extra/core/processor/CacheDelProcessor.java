@@ -30,7 +30,7 @@ public class CacheDelProcessor {
     public static void process(Set<? extends TypeElement> annotations, RoundEnvironment env) {
         for (Element element : env.getElementsAnnotatedWith(CacheDel.class)) {
             if (element.getKind() == ElementKind.METHOD) {
-                String handlePackageName = JCTreeUtil.getAnnotationParameter(element, CacheDel.class, Constants.CACHE_HANDLE_NAME, PropertiesUtil.getCacheHandle());
+                String handlePackageName = JCTreeUtil.getAnnotationParameter(element, CacheDel.class, Constants.CACHE_HANDLE_NAME, PropertiesUtil.getCacheHandle())[0];
                 JCTreeUtil.importPackage(element, handlePackageName);
 
                 String className = handlePackageName.substring(handlePackageName.lastIndexOf(".") + 1);
@@ -57,24 +57,23 @@ public class CacheDelProcessor {
                 /**
                  * create code: xxxHandle.delete(key);
                  */
-                String key = JCTreeUtil.getAnnotationParameter(element, CacheDel.class, Constants.CACHE_KEY_NAME);
-                String keyArr[] = key.split("\\|\\|");
-                JCTree.JCExpression keyExpr[] = new JCTree.JCExpression[keyArr.length];
-                for (int i = 0; i < keyArr.length; i++) {
-                    keyExpr[i] = KeyExpressionUtil.parse(keyArr[i]);
+                String keys[] = JCTreeUtil.getAnnotationParameter(element, CacheDel.class, Constants.CACHE_KEY_NAME);
+                JCTree.JCExpression keyExpr[] = new JCTree.JCExpression[keys.length];
+                for (int i = 0; i < keys.length; i++) {
+                    keyExpr[i] = KeyExpressionUtil.parse(keys[i]);
                 }
 
-                String prefix = JCTreeUtil.getAnnotationParameter(element, CacheDel.class, Constants.CACHE_PREFIX_NAME, PropertiesUtil.getCachePrefix());
+                String prefix = JCTreeUtil.getAnnotationParameter(element, CacheDel.class, Constants.CACHE_PREFIX_NAME, PropertiesUtil.getCachePrefix())[0];
                 if (StringUtil.isNotEmpty(prefix)) {
                     JCTree.JCExpression prefixExpr = treeMaker.Literal(prefix);
-                    for (int i = 0; i < keyArr.length; i++) {
+                    for (int i = 0; i < keys.length; i++) {
                         keyExpr[i] = treeMaker.Binary(JCTree.Tag.PLUS, prefixExpr, keyExpr[i]);
                     }
                 }
 
 
                 ListBuffer<JCTree.JCExpression> keyExprList = new ListBuffer();
-                for (int i = 0; i < keyArr.length; i++) {
+                for (int i = 0; i < keys.length; i++) {
                     keyExprList.append(keyExpr[i]);
                 }
 

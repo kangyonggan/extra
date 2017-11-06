@@ -28,7 +28,7 @@ public class LogProcessor {
     public static void process(Set<? extends TypeElement> annotations, RoundEnvironment env) {
         for (Element element : env.getElementsAnnotatedWith(Log.class)) {
             if (element.getKind() == ElementKind.METHOD) {
-                String handlePackageName = JCTreeUtil.getAnnotationParameter(element, Log.class, Constants.LOG_HANDLE_NAME, PropertiesUtil.getLogHandle());
+                String handlePackageName = JCTreeUtil.getAnnotationParameter(element, Log.class, Constants.LOG_HANDLE_NAME, PropertiesUtil.getLogHandle())[0];
                 JCTreeUtil.importPackage(element, handlePackageName);
 
                 String className = handlePackageName.substring(handlePackageName.lastIndexOf(".") + 1);

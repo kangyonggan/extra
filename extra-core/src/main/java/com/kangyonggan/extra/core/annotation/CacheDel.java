@@ -23,7 +23,7 @@ public @interface CacheDel {
      *
      * @return
      */
-    String key();
+    String[] key();
 
     /**
      * cache channel, default is memory cache
