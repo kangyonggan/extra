@@ -6,7 +6,7 @@
 <dependency>
     <groupId>com.kangyonggan</groupId>
     <artifactId>extra-core</artifactId>
-    <version>1.1</version>
+    <version>1.3</version>
 </dependency>
 ```
 
@@ -68,7 +68,7 @@ public class Demo01 {
 ## default value is ""
 #cache.prefix=extra:
 #
-## default value is Long.MAX_VALUE
+## default value is 315360000000 ms
 #cache.expire=1800000
 #
 ## default is com.kangyonggan.extra.core.handle.MemoryCacheHandle
