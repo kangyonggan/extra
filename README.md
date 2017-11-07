@@ -5,16 +5,16 @@
 ```
 <dependency>
     <groupId>com.kangyonggan</groupId>
-    <artifactId>extra-core</artifactId>
-    <version>1.7</version>
+    <artifactId>extra</artifactId>
+    <version>1.1.1</version>
 </dependency>
 ```
 
 #### Demo01.java
 ```
-package com.kangyonggan.extra.test;
+package com.kangyonggan.extra;
 
-import com.kangyonggan.extra.core.annotation.Cache;
+import com.kangyonggan.extra.annotation.Cache;
 
 /**
  * @author kangyonggan
@@ -40,9 +40,9 @@ public class Demo01 {
 // (powered by Fernflower decompiler)
 //
 
-package com.kangyonggan.extra.test;
+package com.kangyonggan.extra;
 
-import com.kangyonggan.extra.core.handle.MemoryCacheHandle;
+import com.kangyonggan.extra.handle.MemoryCacheHandle;
 
 public class Demo01 {
     private static MemoryCacheHandle _memoryCacheHandle = new MemoryCacheHandle();
@@ -71,23 +71,23 @@ cache.prefix=extra:
 # default value is 10 years
 cache.expire=1800000
 
-# default is com.kangyonggan.extra.core.handle.impl.MemoryCacheHandle
-cache.handle=com.kangyonggan.extra.test.RedisCacheHandle
+# default is com.kangyonggan.extra.handle.impl.MemoryCacheHandle
+cache.handle=com.kangyonggan.extra.RedisCacheHandle
 
-# default is com.kangyonggan.extra.core.handle.impl.ConsoleLogHandle
-log.handle=com.kangyonggan.extra.test.Log4j2LogHandle
+# default is com.kangyonggan.extra.handle.impl.ConsoleLogHandle
+log.handle=com.kangyonggan.extra.Log4j2LogHandle
 
 # default is false
 count.interrupt=false
 
-# default is com.kangyonggan.extra.core.handle.impl.MemoryCountHandle
-#count.handle=com.kangyonggan.extra.test.RedisCountHandle
+# default is com.kangyonggan.extra.handle.impl.MemoryCountHandle
+#count.handle=com.kangyonggan.extra.RedisCountHandle
 
 # default is false
 frequency.interrupt=false
 
-# default is com.kangyonggan.extra.core.handle.impl.MemoryFrequencyHandle
-#frequency.handle=com.kangyonggan.extra.test.RedisFrequencyHandle
+# default is com.kangyonggan.extra.handle.impl.MemoryFrequencyHandle
+#frequency.handle=com.kangyonggan.extra.RedisFrequencyHandle
 ```
 
 ### Annotations
@@ -113,3 +113,4 @@ frequency.interrupt=false
 
 ### Code And Demo
 [https://github.com/kangyonggan/extra.git](https://github.com/kangyonggan/extra.git)
+[https://github.com/kangyonggan/extra-test.git](https://github.com/kangyonggan/extra-test.git)
