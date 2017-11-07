@@ -1,9 +1,8 @@
 package com.kangyonggan.extra.handle.impl;
 
+import com.kangyonggan.extra.exception.MethodCalledFrequencyException;
 import com.kangyonggan.extra.handle.FrequencyHandle;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,16 +13,17 @@ import java.util.Map;
 public class MemoryFrequencyHandle implements FrequencyHandle {
 
     private static Map<String, Long> map = new HashMap();
-    private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override
-    public boolean limit(String key, long interval, boolean interrupt) {
+    public void limit(String key, long interval, boolean interrupt) {
         boolean isLimited = isLimited(key, interval);
         if (isLimited) {
-            System.out.println(String.format("[%s] Method %s %dms times can called one times.interrupt is %s, next code will be %s", format.format(new Date()), key, interval, interrupt, interrupt ? "interrupt" : "continue"));
+            String msg = String.format("Method %s called frequency during %sms times.", key, interval);
+            System.out.println(msg);
+            if (interrupt) {
+                throw new MethodCalledFrequencyException(msg);
+            }
         }
-
-        return isLimited;
     }
 
     private synchronized boolean isLimited(String key, Long interval) {

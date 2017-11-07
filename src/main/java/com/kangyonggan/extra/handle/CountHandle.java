@@ -6,6 +6,6 @@ package com.kangyonggan.extra.handle;
  */
 public interface CountHandle {
 
-    boolean limit(String key, long interval, int count, boolean interrupt);
+    void limit(String key, long interval, int count, boolean interrupt);
 
 }

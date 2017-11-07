@@ -1,6 +1,7 @@
 package com.kangyonggan.extra.processor;
 
 import com.kangyonggan.extra.annotation.Frequency;
+import com.kangyonggan.extra.exception.MethodCalledFrequencyException;
 import com.kangyonggan.extra.model.Constants;
 import com.kangyonggan.extra.util.JCTreeUtil;
 import com.kangyonggan.extra.util.PropertiesUtil;
@@ -9,13 +10,15 @@ import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.TreeTranslator;
 import com.sun.tools.javac.util.List;
 import com.sun.tools.javac.util.ListBuffer;
-import com.sun.tools.javac.util.Name;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import java.util.Set;
+
+import static com.kangyonggan.extra.util.JCTreeUtil.names;
+import static com.kangyonggan.extra.util.JCTreeUtil.treeMaker;
 
 /**
  * @author kangyonggan
@@ -28,6 +31,7 @@ public class FrequencyProcessor {
             if (element.getKind() == ElementKind.METHOD) {
                 String handlePackageName = (String) JCTreeUtil.getAnnotationParameter(element, Frequency.class, Constants.FREQUENCY_HANDLE_NAME, PropertiesUtil.getFrequencyHandle());
                 JCTreeUtil.importPackage(element, handlePackageName);
+                JCTreeUtil.importPackage(element, MethodCalledFrequencyException.class.getName());
 
                 String className = handlePackageName.substring(handlePackageName.lastIndexOf(".") + 1);
                 JCTreeUtil.defineVariable(element, className, List.nil());
@@ -51,36 +55,19 @@ public class FrequencyProcessor {
                 ListBuffer<JCTree.JCStatement> statements = new ListBuffer();
 
                 /**
-                 * create code: Boolean _isLimited = _memoryFrementHandle.limit(key, interval, interrupt);
+                 * create code: _memoryFrementHandle.limit(key, interval, interrupt);
                  */
-                JCTree.JCExpression typeExpr = JCTreeUtil.treeMaker.Ident(JCTreeUtil.names.fromString("Boolean"));
-                JCTree.JCFieldAccess fieldAccess = JCTreeUtil.treeMaker.Select(JCTreeUtil.treeMaker.Ident(JCTreeUtil.names.fromString(varName)), JCTreeUtil.names.fromString(Constants.METHOD_LIMIT));
+                JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString(Constants.METHOD_LIMIT));
                 Long interval = (Long) JCTreeUtil.getAnnotationParameter(element, Frequency.class, Constants.FREQUENCY_INTERVAL_NAME);
                 Boolean interrupt = (Boolean) JCTreeUtil.getAnnotationParameter(element, Frequency.class, Constants.FREQUENCY_INTERRUPT_NAME, PropertiesUtil.getFrequencyInterrupt());
-                JCTree.JCMethodInvocation methodInvocation = JCTreeUtil.treeMaker.Apply(List.nil(), fieldAccess, List.of(JCTreeUtil.treeMaker.Literal(JCTreeUtil.getPackageName(element) + "." + element.toString()), JCTreeUtil.treeMaker.Literal(interval), JCTreeUtil.treeMaker.Literal(interrupt)));
-                Name isLimit = JCTreeUtil.names.fromString(Constants.VARIABLE_PREFIX + "isLimited");
-                JCTree.JCVariableDecl variableDecl = JCTreeUtil.treeMaker.VarDef(JCTreeUtil.treeMaker.Modifiers(0), isLimit, typeExpr, methodInvocation);
-                statements.append(variableDecl);
-
-                if (interrupt) {
-                    /**
-                     * create code: if (_isLimited) { return returnValue; }
-                     */
-                    JCTree.JCParens condition = JCTreeUtil.treeMaker.Parens(JCTreeUtil.treeMaker.Ident(isLimit));
-                    JCTree.JCExpression returnType = JCTreeUtil.getReturnType(element);
-                    JCTree.JCStatement statementTrue = JCTreeUtil.treeMaker.Return(null);
-                    if (returnType != null && !returnType.toString().equals(Constants.RETURN_VOID)) {
-                        statementTrue = JCTreeUtil.treeMaker.Return(JCTreeUtil.treeMaker.TypeCast(returnType, JCTreeUtil.getTypeDefaultValue(returnType)));
-                    }
-                    JCTree.JCIf jcIf = JCTreeUtil.treeMaker.If(condition, statementTrue, null);
-                    statements.append(jcIf);
-                }
+                JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(treeMaker.Literal(JCTreeUtil.getPackageName(element) + "." + element.toString()), treeMaker.Literal(interval), treeMaker.Literal(interrupt)));
+                statements.append(treeMaker.Exec(methodInvocation));
 
                 for (int i = 0; i < tree.getStatements().size(); i++) {
                     statements.append(tree.getStatements().get(i));
                 }
 
-                result = JCTreeUtil.treeMaker.Block(0, statements.toList());
+                result = treeMaker.Block(0, statements.toList());
             }
         });
     }

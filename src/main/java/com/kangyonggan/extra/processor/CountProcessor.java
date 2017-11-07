@@ -1,6 +1,7 @@
 package com.kangyonggan.extra.processor;
 
 import com.kangyonggan.extra.annotation.Count;
+import com.kangyonggan.extra.exception.MethodCalledOutOfCountException;
 import com.kangyonggan.extra.model.Constants;
 import com.kangyonggan.extra.util.JCTreeUtil;
 import com.kangyonggan.extra.util.PropertiesUtil;
@@ -9,13 +10,14 @@ import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.TreeTranslator;
 import com.sun.tools.javac.util.List;
 import com.sun.tools.javac.util.ListBuffer;
-import com.sun.tools.javac.util.Name;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import java.util.Set;
+
+import static com.kangyonggan.extra.util.JCTreeUtil.*;
 
 /**
  * @author kangyonggan
@@ -28,6 +30,7 @@ public class CountProcessor {
             if (element.getKind() == ElementKind.METHOD) {
                 String handlePackageName = (String) JCTreeUtil.getAnnotationParameter(element, Count.class, Constants.COUNT_HANDLE_NAME, PropertiesUtil.getCountHandle());
                 JCTreeUtil.importPackage(element, handlePackageName);
+                JCTreeUtil.importPackage(element, MethodCalledOutOfCountException.class.getName());
 
                 String className = handlePackageName.substring(handlePackageName.lastIndexOf(".") + 1);
                 JCTreeUtil.defineVariable(element, className, List.nil());
@@ -43,7 +46,7 @@ public class CountProcessor {
      */
     private static void generateBlockCode(Element element, String className) {
         String varName = Constants.VARIABLE_PREFIX + StringUtil.firstToLowerCase(className);
-        JCTree tree = (JCTree) JCTreeUtil.trees.getTree(element);
+        JCTree tree = (JCTree) trees.getTree(element);
 
         tree.accept(new TreeTranslator() {
             @Override
@@ -51,37 +54,20 @@ public class CountProcessor {
                 ListBuffer<JCTree.JCStatement> statements = new ListBuffer();
 
                 /**
-                 * create code: Boolean _isLimited = _memoryCountHandle.limit(key, interval, count, interrupt);
+                 * create code: _memoryCountHandle.limit(key, interval, count, interrupt);
                  */
-                JCTree.JCExpression typeExpr = JCTreeUtil.treeMaker.Ident(JCTreeUtil.names.fromString("Boolean"));
-                JCTree.JCFieldAccess fieldAccess = JCTreeUtil.treeMaker.Select(JCTreeUtil.treeMaker.Ident(JCTreeUtil.names.fromString(varName)), JCTreeUtil.names.fromString(Constants.METHOD_LIMIT));
+                JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString(Constants.METHOD_LIMIT));
                 Long interval = (Long) JCTreeUtil.getAnnotationParameter(element, Count.class, Constants.COUNT_INTERVAL_NAME);
                 Integer count = (Integer) JCTreeUtil.getAnnotationParameter(element, Count.class, Constants.COUNT_COUNT_NAME);
                 Boolean interrupt = (Boolean) JCTreeUtil.getAnnotationParameter(element, Count.class, Constants.COUNT_INTERRUPT_NAME, PropertiesUtil.getCountInterrupt());
-                JCTree.JCMethodInvocation methodInvocation = JCTreeUtil.treeMaker.Apply(List.nil(), fieldAccess, List.of(JCTreeUtil.treeMaker.Literal(JCTreeUtil.getPackageName(element) + "." + element.toString()), JCTreeUtil.treeMaker.Literal(interval), JCTreeUtil.treeMaker.Literal(count), JCTreeUtil.treeMaker.Literal(interrupt)));
-                Name isLimit = JCTreeUtil.names.fromString(Constants.VARIABLE_PREFIX + "isLimited");
-                JCTree.JCVariableDecl variableDecl = JCTreeUtil.treeMaker.VarDef(JCTreeUtil.treeMaker.Modifiers(0), isLimit, typeExpr, methodInvocation);
-                statements.append(variableDecl);
-
-                if (interrupt) {
-                    /**
-                     * create code: if (_isLimited) { return returnValue; }
-                     */
-                    JCTree.JCParens condition = JCTreeUtil.treeMaker.Parens(JCTreeUtil.treeMaker.Ident(isLimit));
-                    JCTree.JCExpression returnType = JCTreeUtil.getReturnType(element);
-                    JCTree.JCStatement statementTrue = JCTreeUtil.treeMaker.Return(null);
-                    if (returnType != null && !returnType.toString().equals(Constants.RETURN_VOID)) {
-                        statementTrue = JCTreeUtil.treeMaker.Return(JCTreeUtil.treeMaker.TypeCast(returnType, JCTreeUtil.getTypeDefaultValue(returnType)));
-                    }
-                    JCTree.JCIf jcIf = JCTreeUtil.treeMaker.If(condition, statementTrue, null);
-                    statements.append(jcIf);
-                }
+                JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(treeMaker.Literal(JCTreeUtil.getPackageName(element) + "." + element.toString()), treeMaker.Literal(interval), treeMaker.Literal(count), treeMaker.Literal(interrupt)));
+                statements.append(treeMaker.Exec(methodInvocation));
 
                 for (int i = 0; i < tree.getStatements().size(); i++) {
                     statements.append(tree.getStatements().get(i));
                 }
 
-                result = JCTreeUtil.treeMaker.Block(0, statements.toList());
+                result = treeMaker.Block(0, statements.toList());
             }
         });
     }

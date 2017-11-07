@@ -16,6 +16,10 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import java.util.Set;
 
+import static com.kangyonggan.extra.util.JCTreeUtil.names;
+import static com.kangyonggan.extra.util.JCTreeUtil.treeMaker;
+import static com.kangyonggan.extra.util.JCTreeUtil.trees;
+
 /**
  * @author kangyonggan
  * @since 2017/11/4 0004
@@ -29,7 +33,7 @@ public class LogProcessor {
                 JCTreeUtil.importPackage(element, handlePackageName);
 
                 String className = handlePackageName.substring(handlePackageName.lastIndexOf(".") + 1);
-                JCTreeUtil.defineVariable(element, className, List.of(JCTreeUtil.treeMaker.Literal(JCTreeUtil.getPackageName(element))));
+                JCTreeUtil.defineVariable(element, className, List.of(treeMaker.Literal(JCTreeUtil.getPackageName(element))));
 
                 generateBlockCode(element, className);
                 generateReturnCode(element, className);
@@ -43,7 +47,7 @@ public class LogProcessor {
      */
     private static void generateReturnCode(Element element, String className) {
         String varName = Constants.VARIABLE_PREFIX + StringUtil.firstToLowerCase(className);
-        JCTree tree = (JCTree) JCTreeUtil.trees.getTree(element.getEnclosingElement());
+        JCTree tree = (JCTree) trees.getTree(element.getEnclosingElement());
 
         tree.accept(new TreeTranslator() {
             private boolean isTargetMethod;
@@ -80,10 +84,10 @@ public class LogProcessor {
                     /**
                      * create code: return (ReturnType) xxxHandle.logAfter(methodName, returnValue);
                      */
-                    JCTree.JCFieldAccess fieldAccess = JCTreeUtil.treeMaker.Select(JCTreeUtil.treeMaker.Ident(JCTreeUtil.names.fromString(varName)), JCTreeUtil.names.fromString("logAfter"));
-                    JCTree.JCMethodInvocation methodInvocation = JCTreeUtil.treeMaker.Apply(List.nil(), fieldAccess, List.of(JCTreeUtil.getMethodName(element), JCTreeUtil.treeMaker.Ident(JCTreeUtil.names.fromString(Constants.VARIABLE_PREFIX + "methodStartTime")), jcReturn.getExpression()));
+                    JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString("logAfter"));
+                    JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(JCTreeUtil.getMethodName(element), treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "methodStartTime")), jcReturn.getExpression()));
 
-                    JCTree.JCTypeCast jcTypeCast = JCTreeUtil.treeMaker.TypeCast(JCTreeUtil.getReturnType(element), methodInvocation);
+                    JCTree.JCTypeCast jcTypeCast = treeMaker.TypeCast(JCTreeUtil.getReturnType(element), methodInvocation);
                     jcReturn.expr = jcTypeCast;
                 }
                 this.result = jcReturn;
@@ -97,7 +101,7 @@ public class LogProcessor {
      */
     private static void generateBlockCode(Element element, String className) {
         String varName = Constants.VARIABLE_PREFIX + StringUtil.firstToLowerCase(className);
-        JCTree tree = (JCTree) JCTreeUtil.trees.getTree(element);
+        JCTree tree = (JCTree) trees.getTree(element);
 
         tree.accept(new TreeTranslator() {
             @Override
@@ -107,24 +111,24 @@ public class LogProcessor {
                 /**
                  * create code: xxxHandle.logBefore(methodName, args);
                  */
-                JCTree.JCFieldAccess fieldAccess = JCTreeUtil.treeMaker.Select(JCTreeUtil.treeMaker.Ident(JCTreeUtil.names.fromString(varName)), JCTreeUtil.names.fromString(Constants.METHOD_LOG_BEFORE));
+                JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString(Constants.METHOD_LOG_BEFORE));
                 JCTree.JCLiteral methodName = JCTreeUtil.getMethodName(element);
                 List args = JCTreeUtil.getParameters(element);
                 List params = List.of(methodName);
                 for (int i = 0; i < args.size(); i++) {
                     params = params.append(args.get(i));
                 }
-                JCTree.JCMethodInvocation methodInvocation = JCTreeUtil.treeMaker.Apply(List.nil(), fieldAccess, params);
-                JCTree.JCExpressionStatement code = JCTreeUtil.treeMaker.Exec(methodInvocation);
+                JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, params);
+                JCTree.JCExpressionStatement code = treeMaker.Exec(methodInvocation);
                 statements.append(code);
 
                 /**
                  * create code: Long _methodStartTime = System.currentTimeMillis();
                  */
-                JCTree.JCExpression typeExpr = JCTreeUtil.treeMaker.Ident(JCTreeUtil.names.fromString("Long"));
-                fieldAccess = JCTreeUtil.treeMaker.Select(JCTreeUtil.treeMaker.Ident(JCTreeUtil.names.fromString("System")), JCTreeUtil.names.fromString("currentTimeMillis"));
-                methodInvocation = JCTreeUtil.treeMaker.Apply(List.nil(), fieldAccess, List.nil());
-                JCTree.JCVariableDecl variableDecl = JCTreeUtil.treeMaker.VarDef(JCTreeUtil.treeMaker.Modifiers(0), JCTreeUtil.names.fromString(Constants.VARIABLE_PREFIX + "methodStartTime"), typeExpr, methodInvocation);
+                JCTree.JCExpression typeExpr = treeMaker.Ident(names.fromString("Long"));
+                fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString("System")), names.fromString("currentTimeMillis"));
+                methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.nil());
+                JCTree.JCVariableDecl variableDecl = treeMaker.VarDef(treeMaker.Modifiers(0), names.fromString(Constants.VARIABLE_PREFIX + "methodStartTime"), typeExpr, methodInvocation);
                 statements.append(variableDecl);
 
                 JCTree.JCExpression returnType = JCTreeUtil.getReturnType(element);
@@ -135,20 +139,20 @@ public class LogProcessor {
                                 /**
                                  * create code: xxxHandle.logAfter(methodName, null);
                                  */
-                                fieldAccess = JCTreeUtil.treeMaker.Select(JCTreeUtil.treeMaker.Ident(JCTreeUtil.names.fromString(varName)), JCTreeUtil.names.fromString(Constants.METHOD_LOG_AFTER));
-                                methodInvocation = JCTreeUtil.treeMaker.Apply(List.nil(), fieldAccess, List.of(JCTreeUtil.getMethodName(element), JCTreeUtil.treeMaker.Ident(JCTreeUtil.names.fromString(Constants.VARIABLE_PREFIX + "methodStartTime")), JCTreeUtil.getNull()));
+                                fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString(Constants.METHOD_LOG_AFTER));
+                                methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(JCTreeUtil.getMethodName(element), treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "methodStartTime")), JCTreeUtil.getNull()));
 
-                                statements.append(JCTreeUtil.treeMaker.Exec(methodInvocation));
+                                statements.append(treeMaker.Exec(methodInvocation));
                                 statements.append(tree.getStatements().get(i));
                             } else {
                                 statements.append(tree.getStatements().get(i));
                                 /**
                                  * create code: xxxHandle.logAfter(methodName, null);
                                  */
-                                fieldAccess = JCTreeUtil.treeMaker.Select(JCTreeUtil.treeMaker.Ident(JCTreeUtil.names.fromString(varName)), JCTreeUtil.names.fromString(Constants.METHOD_LOG_AFTER));
-                                methodInvocation = JCTreeUtil.treeMaker.Apply(List.nil(), fieldAccess, List.of(JCTreeUtil.getMethodName(element), JCTreeUtil.treeMaker.Ident(JCTreeUtil.names.fromString(Constants.VARIABLE_PREFIX + "methodStartTime")), JCTreeUtil.getNull()));
+                                fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString(Constants.METHOD_LOG_AFTER));
+                                methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(JCTreeUtil.getMethodName(element), treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "methodStartTime")), JCTreeUtil.getNull()));
 
-                                statements.append(JCTreeUtil.treeMaker.Exec(methodInvocation));
+                                statements.append(treeMaker.Exec(methodInvocation));
                             }
                         } else {
                             statements.append(tree.getStatements().get(i));
@@ -158,7 +162,7 @@ public class LogProcessor {
                     }
                 }
 
-                result = JCTreeUtil.treeMaker.Block(0, statements.toList());
+                result = treeMaker.Block(0, statements.toList());
             }
         });
     }

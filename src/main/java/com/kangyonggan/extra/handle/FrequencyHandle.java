@@ -6,6 +6,6 @@ package com.kangyonggan.extra.handle;
  */
 public interface FrequencyHandle {
 
-    boolean limit(String key, long interval, boolean interrupt);
+    void limit(String key, long interval, boolean interrupt);
 
 }

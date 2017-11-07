@@ -17,6 +17,10 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import java.util.Set;
 
+import static com.kangyonggan.extra.util.JCTreeUtil.names;
+import static com.kangyonggan.extra.util.JCTreeUtil.treeMaker;
+import static com.kangyonggan.extra.util.JCTreeUtil.trees;
+
 /**
  * @author kangyonggan
  * @since 2017/11/4 0004
@@ -43,7 +47,7 @@ public class CacheDelProcessor {
      */
     private static void generateBlockCode(Element element, String className) {
         String varName = Constants.VARIABLE_PREFIX + StringUtil.firstToLowerCase(className);
-        JCTree tree = (JCTree) JCTreeUtil.trees.getTree(element);
+        JCTree tree = (JCTree) trees.getTree(element);
 
         tree.accept(new TreeTranslator() {
             @Override
@@ -61,9 +65,9 @@ public class CacheDelProcessor {
 
                 String prefix = (String) JCTreeUtil.getAnnotationParameter(element, CacheDel.class, Constants.CACHE_PREFIX_NAME, PropertiesUtil.getCachePrefix());
                 if (StringUtil.isNotEmpty(prefix)) {
-                    JCTree.JCExpression prefixExpr = JCTreeUtil.treeMaker.Literal(prefix);
+                    JCTree.JCExpression prefixExpr = treeMaker.Literal(prefix);
                     for (int i = 0; i < keys.length; i++) {
-                        keyExpr[i] = JCTreeUtil.treeMaker.Binary(JCTree.Tag.PLUS, prefixExpr, keyExpr[i]);
+                        keyExpr[i] = treeMaker.Binary(JCTree.Tag.PLUS, prefixExpr, keyExpr[i]);
                     }
                 }
 
@@ -73,15 +77,15 @@ public class CacheDelProcessor {
                     keyExprList.append(keyExpr[i]);
                 }
 
-                JCTree.JCFieldAccess fieldAccess = JCTreeUtil.treeMaker.Select(JCTreeUtil.treeMaker.Ident(JCTreeUtil.names.fromString(varName)), JCTreeUtil.names.fromString(Constants.METHOD_DELETE));
-                JCTree.JCMethodInvocation methodInvocation = JCTreeUtil.treeMaker.Apply(List.nil(), fieldAccess, keyExprList.toList());
-                statements.append(JCTreeUtil.treeMaker.Exec(methodInvocation));
+                JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString(Constants.METHOD_DELETE));
+                JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, keyExprList.toList());
+                statements.append(treeMaker.Exec(methodInvocation));
 
                 for (JCTree.JCStatement jcStatement : tree.getStatements()) {
                     statements.append(jcStatement);
                 }
 
-                result = JCTreeUtil.treeMaker.Block(0, statements.toList());
+                result = treeMaker.Block(0, statements.toList());
             }
         });
     }

@@ -1,9 +1,9 @@
 package com.kangyonggan.extra.handle.impl;
 
+import com.kangyonggan.extra.exception.MethodCalledOutOfCountException;
 import com.kangyonggan.extra.handle.CountHandle;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -18,13 +18,15 @@ public class MemoryCountHandle implements CountHandle {
     private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override
-    public boolean limit(String key, long interval, int count, boolean interrupt) {
+    public void limit(String key, long interval, int count, boolean interrupt) {
         boolean isLimited = isLimited(key, interval, count);
         if (isLimited) {
-            System.out.println(String.format("[%s] Method %s during %dms was called %d times.interrupt is %s, next code will be %s", format.format(new Date()), key, interval, count, interrupt, interrupt ? "interrupt" : "continue"));
+            String msg = String.format("Method %s called out of %d counts during %sms times.", key, count, interval);
+            System.out.println(msg);
+            if (interrupt) {
+                throw new MethodCalledOutOfCountException(msg);
+            }
         }
-
-        return isLimited;
     }
 
     private synchronized boolean isLimited(String key, Long interval, int count) {
