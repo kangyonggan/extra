@@ -17,11 +17,11 @@ import java.util.Set;
  * @since 10/31/17
  */
 @SupportedAnnotationTypes({
-        "com.kangyonggan.extra.core.annotation.Count",
-        "com.kangyonggan.extra.core.annotation.Frequency",
-        "com.kangyonggan.extra.core.annotation.Cache",
-        "com.kangyonggan.extra.core.annotation.CacheDel",
-        "com.kangyonggan.extra.core.annotation.Log"
+        "com.kangyonggan.extra.annotation.Count",
+        "com.kangyonggan.extra.annotation.Frequency",
+        "com.kangyonggan.extra.annotation.Cache",
+        "com.kangyonggan.extra.annotation.CacheDel",
+        "com.kangyonggan.extra.annotation.Log"
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class ExtraProcessor extends AbstractProcessor {
