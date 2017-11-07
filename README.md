@@ -88,6 +88,12 @@ frequency.interrupt=false
 
 # default is com.kangyonggan.extra.handle.impl.MemoryFrequencyHandle
 #frequency.handle=com.kangyonggan.extra.RedisFrequencyHandle
+
+# default is false
+valid.interrupt=false
+
+# default is com.kangyonggan.extra.handle.impl.ConsoleValidHandle
+#valid.handle=com.kangyonggan.extra.Log4j2ValidHandle
 ```
 
 ### Annotations
