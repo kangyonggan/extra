@@ -6,7 +6,7 @@
 <dependency>
     <groupId>com.kangyonggan</groupId>
     <artifactId>extra</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
 </dependency>
 ```
 
@@ -110,6 +110,9 @@ frequency.interrupt=false
 #### @Frequency
 1. During interval times can called method one times.
 2. When called frequency, call alarm method.
+
+#### @Valid
+1. Valid the method arguments.
 
 ### Code And Demo
 [https://github.com/kangyonggan/extra.git](https://github.com/kangyonggan/extra.git)

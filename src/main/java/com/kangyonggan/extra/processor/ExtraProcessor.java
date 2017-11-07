@@ -17,6 +17,7 @@ import java.util.Set;
  * @since 10/31/17
  */
 @SupportedAnnotationTypes({
+        "com.kangyonggan.extra.annotation.Valid",
         "com.kangyonggan.extra.annotation.Count",
         "com.kangyonggan.extra.annotation.Frequency",
         "com.kangyonggan.extra.annotation.Cache",
@@ -44,6 +45,7 @@ public class ExtraProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment env) {
         // 这些processor的顺序不可变
+        ValidProcess.process(annotations, env);
         CountProcessor.process(annotations, env);
         FrequencyProcessor.process(annotations, env);
         CacheProcessor.process(annotations, env);

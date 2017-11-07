@@ -1,9 +1,6 @@
 package com.kangyonggan.extra.util;
 
-import com.kangyonggan.extra.handle.impl.ConsoleLogHandler;
-import com.kangyonggan.extra.handle.impl.MemoryCacheHandle;
-import com.kangyonggan.extra.handle.impl.MemoryCountHandle;
-import com.kangyonggan.extra.handle.impl.MemoryFrequencyHandle;
+import com.kangyonggan.extra.handle.impl.*;
 import com.kangyonggan.extra.model.Constants;
 
 import java.io.InputStream;
@@ -61,6 +58,14 @@ public class PropertiesUtil {
         if (StringUtil.isEmpty(props.getProperty(Constants.FREQUENCY_HANDLE))) {
             props.setProperty(Constants.FREQUENCY_HANDLE, MemoryFrequencyHandle.class.getName());
         }
+
+        if (StringUtil.isEmpty(props.getProperty(Constants.VALID_INTERRUPT))) {
+            props.setProperty(Constants.VALID_INTERRUPT, String.valueOf(false));
+        }
+
+        if (StringUtil.isEmpty(props.getProperty(Constants.VALID_HANDLE))) {
+            props.setProperty(Constants.VALID_HANDLE, ConsoleValidHandle.class.getName());
+        }
     }
 
     public static String getCachePrefix() {
@@ -93,6 +98,14 @@ public class PropertiesUtil {
 
     public static String getFrequencyHandle() {
         return props.getProperty(Constants.FREQUENCY_HANDLE);
+    }
+
+    public static boolean getValidInterrupt() {
+        return Boolean.parseBoolean(props.getProperty(Constants.VALID_INTERRUPT));
+    }
+
+    public static String getValidHandle() {
+        return props.getProperty(Constants.VALID_HANDLE);
     }
 
 }

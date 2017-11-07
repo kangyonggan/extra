@@ -136,13 +136,13 @@ public class CacheProcessor {
                     keyExpr = treeMaker.Binary(JCTree.Tag.PLUS, prefixExpr, keyExpr);
                 }
 
-                statements.append(JCTreeUtil.callMethodWithReturn(Constants.OBJECT_NAME, varName, Constants.VARIABLE_CACHE_VALUE, Constants.METHOD_GET, List.of(keyExpr)));
+                statements.append(JCTreeUtil.callMethodWithReturn(Constants.OBJECT_NAME, varName, Constants.VARIABLE_PREFIX + "cacheValue", Constants.METHOD_GET, List.of(keyExpr)));
 
                 /**
                  * create code：if (_cacheValue != null) {return (returnType) _cacheValue;}
                  */
-                JCTree.JCParens condition = treeMaker.Parens(JCTreeUtil.notNull(Constants.VARIABLE_CACHE_VALUE));
-                JCTree.JCStatement statementTrue = treeMaker.Return(treeMaker.TypeCast(returnType, treeMaker.Ident(names.fromString(Constants.VARIABLE_CACHE_VALUE))));
+                JCTree.JCParens condition = treeMaker.Parens(JCTreeUtil.notNull(Constants.VARIABLE_PREFIX + "cacheValue"));
+                JCTree.JCStatement statementTrue = treeMaker.Return(treeMaker.TypeCast(returnType, treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "cacheValue"))));
                 JCTree.JCIf jcIf = treeMaker.If(condition, statementTrue, null);
                 statements.append(jcIf);
 
