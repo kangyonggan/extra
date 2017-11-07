@@ -5,6 +5,9 @@ import com.kangyonggan.extra.exception.GetterNotFoundException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author kangyonggan
@@ -15,7 +18,7 @@ public class ValidUtil {
     public static void valid(boolean interrupt, String handlePackage, Object... args) {
         try {
             for (Object arg : args) {
-                Field[] fields = arg.getClass().getDeclaredFields();
+                List<Field> fields = getAllField(arg.getClass());
                 for (Field field : fields) {
                     validField(field, arg);
                 }
@@ -134,10 +137,33 @@ public class ValidUtil {
 
     private static Method getGetterMethod(Class clazz, Field field) {
         try {
-            return clazz.getDeclaredMethod("get" + StringUtil.firstToUpperCase(field.getName()));
+            return getMethod(clazz, "get" + StringUtil.firstToUpperCase(field.getName()));
         } catch (Exception e) {
             throw new GetterNotFoundException(clazz, field);
         }
+    }
+
+    private static List<Field> getAllField(Class clazz) {
+        List<Field> fields = new ArrayList();
+        while (clazz != null) {
+            fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
+            clazz = clazz.getSuperclass();
+        }
+
+        return fields;
+    }
+
+    private static Method getMethod(Class clazz, String methodName) throws Exception {
+        Method method = null;
+        while (method == null) {
+            try {
+                method = clazz.getDeclaredMethod(methodName);
+            } catch (Exception e) {
+            }
+            clazz = clazz.getSuperclass();
+        }
+
+        return method;
     }
 
 }
