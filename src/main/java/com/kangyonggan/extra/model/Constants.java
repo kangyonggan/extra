@@ -34,6 +34,9 @@ public interface Constants {
 
     // @Count
     String COUNT_INTERVAL_NAME = "interval";
+    String COUNT_PREFIX = "count.prefix";
+    String COUNT_PREFIX_NAME = "prefix";
+    String COUNT_KEY_NAME = "key";
     String COUNT_COUNT_NAME = "count";
     String COUNT_INTERRUPT = "count.interrupt";
     String COUNT_INTERRUPT_NAME = "interrupt";
@@ -44,6 +47,9 @@ public interface Constants {
     String FREQUENCY_INTERVAL_NAME = "interval";
     String FREQUENCY_INTERRUPT = "frequency.interrupt";
     String FREQUENCY_INTERRUPT_NAME = "interrupt";
+    String FREQUENCY_PREFIX_NAME = "prefix";
+    String FREQUENCY_PREFIX = "frequency.prefix";
+    String FREQUENCY_KEY_NAME = "key";
     String FREQUENCY_HANDLE_NAME = "handle";
     String FREQUENCY_HANDLE = "frequency.handle";
 

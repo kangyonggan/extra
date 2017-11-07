@@ -4,6 +4,7 @@ import com.kangyonggan.extra.annotation.Frequency;
 import com.kangyonggan.extra.exception.MethodCalledFrequencyException;
 import com.kangyonggan.extra.model.Constants;
 import com.kangyonggan.extra.util.JCTreeUtil;
+import com.kangyonggan.extra.util.KeyExpressionUtil;
 import com.kangyonggan.extra.util.PropertiesUtil;
 import com.kangyonggan.extra.util.StringUtil;
 import com.sun.tools.javac.tree.JCTree;
@@ -58,9 +59,18 @@ public class FrequencyProcessor {
                  * create code: _memoryFrementHandle.limit(key, interval, interrupt);
                  */
                 JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString(Constants.METHOD_LIMIT));
+                String prefix = (String) JCTreeUtil.getAnnotationParameter(element, Frequency.class, Constants.FREQUENCY_PREFIX_NAME, PropertiesUtil.getFrequencyPrefix());
+                String key = (String) JCTreeUtil.getAnnotationParameter(element, Frequency.class, Constants.FREQUENCY_KEY_NAME, StringUtil.EXPTY);
+                JCTree.JCExpression keyExpr;
+                if (StringUtil.isEmpty(key)) {
+                    keyExpr = treeMaker.Literal(prefix + JCTreeUtil.getPackageName(element) + "." + element.toString());
+                } else {
+                    keyExpr = KeyExpressionUtil.parse(prefix + key);
+                }
+
                 Long interval = (Long) JCTreeUtil.getAnnotationParameter(element, Frequency.class, Constants.FREQUENCY_INTERVAL_NAME);
                 Boolean interrupt = (Boolean) JCTreeUtil.getAnnotationParameter(element, Frequency.class, Constants.FREQUENCY_INTERRUPT_NAME, PropertiesUtil.getFrequencyInterrupt());
-                JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(treeMaker.Literal(JCTreeUtil.getPackageName(element) + "." + element.toString()), treeMaker.Literal(interval), treeMaker.Literal(interrupt)));
+                JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(keyExpr, treeMaker.Literal(interval), treeMaker.Literal(interrupt)));
                 statements.append(treeMaker.Exec(methodInvocation));
 
                 for (int i = 0; i < tree.getStatements().size(); i++) {

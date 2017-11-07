@@ -6,7 +6,7 @@
 <dependency>
     <groupId>com.kangyonggan</groupId>
     <artifactId>extra</artifactId>
-    <version>1.1.2</version>
+    <version>1.1.3</version>
 </dependency>
 ```
 
@@ -77,11 +77,17 @@ cache.handle=com.kangyonggan.extra.RedisCacheHandle
 # default is com.kangyonggan.extra.handle.impl.ConsoleLogHandle
 log.handle=com.kangyonggan.extra.Log4j2LogHandle
 
+# default value is ""
+count.prefix=extra:
+
 # default is false
 count.interrupt=false
 
 # default is com.kangyonggan.extra.handle.impl.MemoryCountHandle
 #count.handle=com.kangyonggan.extra.RedisCountHandle
+
+# default value is ""
+frequency.prefix=extra:
 
 # default is false
 frequency.interrupt=false

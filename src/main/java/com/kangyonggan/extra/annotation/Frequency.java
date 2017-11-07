@@ -2,6 +2,7 @@ package com.kangyonggan.extra.annotation;
 
 import com.kangyonggan.extra.handle.FrequencyHandle;
 import com.kangyonggan.extra.handle.impl.MemoryFrequencyHandle;
+import com.kangyonggan.extra.util.StringUtil;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -17,6 +18,20 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.METHOD)
 public @interface Frequency {
+
+    /**
+     * key prefix
+     *
+     * @return
+     */
+    String prefix() default StringUtil.EXPTY;
+
+    /**
+     * key
+     *
+     * @return
+     */
+    String key() default "";
 
     /**
      * method called interval, unit is ms

@@ -4,6 +4,7 @@ import com.kangyonggan.extra.annotation.Count;
 import com.kangyonggan.extra.exception.MethodCalledOutOfCountException;
 import com.kangyonggan.extra.model.Constants;
 import com.kangyonggan.extra.util.JCTreeUtil;
+import com.kangyonggan.extra.util.KeyExpressionUtil;
 import com.kangyonggan.extra.util.PropertiesUtil;
 import com.kangyonggan.extra.util.StringUtil;
 import com.sun.tools.javac.tree.JCTree;
@@ -57,10 +58,19 @@ public class CountProcessor {
                  * create code: _memoryCountHandle.limit(key, interval, count, interrupt);
                  */
                 JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString(Constants.METHOD_LIMIT));
+                String prefix = (String) JCTreeUtil.getAnnotationParameter(element, Count.class, Constants.COUNT_PREFIX_NAME, PropertiesUtil.getCountPrefix());
+                String key = (String) JCTreeUtil.getAnnotationParameter(element, Count.class, Constants.COUNT_KEY_NAME, StringUtil.EXPTY);
+                JCTree.JCExpression keyExpr;
+                if (StringUtil.isEmpty(key)) {
+                    keyExpr = treeMaker.Literal(prefix + JCTreeUtil.getPackageName(element) + "." + element.toString());
+                } else {
+                    keyExpr = KeyExpressionUtil.parse(prefix + key);
+                }
+
                 Long interval = (Long) JCTreeUtil.getAnnotationParameter(element, Count.class, Constants.COUNT_INTERVAL_NAME);
                 Integer count = (Integer) JCTreeUtil.getAnnotationParameter(element, Count.class, Constants.COUNT_COUNT_NAME);
                 Boolean interrupt = (Boolean) JCTreeUtil.getAnnotationParameter(element, Count.class, Constants.COUNT_INTERRUPT_NAME, PropertiesUtil.getCountInterrupt());
-                JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(treeMaker.Literal(JCTreeUtil.getPackageName(element) + "." + element.toString()), treeMaker.Literal(interval), treeMaker.Literal(count), treeMaker.Literal(interrupt)));
+                JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(keyExpr, treeMaker.Literal(interval), treeMaker.Literal(count), treeMaker.Literal(interrupt)));
                 statements.append(treeMaker.Exec(methodInvocation));
 
                 for (int i = 0; i < tree.getStatements().size(); i++) {

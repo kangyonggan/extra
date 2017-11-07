@@ -43,12 +43,20 @@ public class PropertiesUtil {
             props.setProperty(Constants.LOG_HANDLE, ConsoleLogHandler.class.getName());
         }
 
+        if (StringUtil.isEmpty(props.getProperty(Constants.COUNT_PREFIX))) {
+            props.setProperty(Constants.COUNT_PREFIX, StringUtil.EXPTY);
+        }
+
         if (StringUtil.isEmpty(props.getProperty(Constants.COUNT_INTERRUPT))) {
             props.setProperty(Constants.COUNT_INTERRUPT, String.valueOf(false));
         }
 
         if (StringUtil.isEmpty(props.getProperty(Constants.COUNT_HANDLE))) {
             props.setProperty(Constants.COUNT_HANDLE, MemoryCountHandle.class.getName());
+        }
+
+        if (StringUtil.isEmpty(props.getProperty(Constants.FREQUENCY_PREFIX))) {
+            props.setProperty(Constants.FREQUENCY_PREFIX, StringUtil.EXPTY);
         }
 
         if (StringUtil.isEmpty(props.getProperty(Constants.FREQUENCY_INTERRUPT))) {
@@ -84,12 +92,20 @@ public class PropertiesUtil {
         return props.getProperty(Constants.LOG_HANDLE);
     }
 
+    public static String getCountPrefix() {
+        return props.getProperty(Constants.COUNT_PREFIX);
+    }
+
     public static boolean getCountInterrupt() {
         return Boolean.parseBoolean(props.getProperty(Constants.COUNT_INTERRUPT));
     }
 
     public static String getCountHandle() {
         return props.getProperty(Constants.COUNT_HANDLE);
+    }
+
+    public static String getFrequencyPrefix() {
+        return props.getProperty(Constants.FREQUENCY_PREFIX);
     }
 
     public static boolean getFrequencyInterrupt() {
