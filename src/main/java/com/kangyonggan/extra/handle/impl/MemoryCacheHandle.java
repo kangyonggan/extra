@@ -34,9 +34,6 @@ public class MemoryCacheHandle implements CacheHandle {
             return null;
         }
 
-        // update cache item's  updateTime
-        cacheItem.setUpdateDate(new Date());
-
         return cacheItem.getValue();
     }
 
