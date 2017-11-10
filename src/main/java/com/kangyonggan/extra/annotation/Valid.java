@@ -2,6 +2,7 @@ package com.kangyonggan.extra.annotation;
 
 import com.kangyonggan.extra.handle.ValidHandle;
 import com.kangyonggan.extra.handle.impl.ConsoleValidHandle;
+import com.kangyonggan.extra.util.StringUtil;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -30,7 +31,7 @@ public @interface Valid {
 
     boolean number() default false;
 
-    String regex() default "";
+    String regex() default StringUtil.EXPTY;
 
     /**
      * when valid failure, is interrupt

@@ -31,7 +31,7 @@ public @interface Count {
      *
      * @return
      */
-    String key() default "";
+    String key() default StringUtil.EXPTY;
 
     /**
      * method called interval, unit is ms

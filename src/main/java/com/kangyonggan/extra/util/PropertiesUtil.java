@@ -74,6 +74,18 @@ public class PropertiesUtil {
         if (StringUtil.isEmpty(props.getProperty(Constants.VALID_HANDLE))) {
             props.setProperty(Constants.VALID_HANDLE, ConsoleValidHandle.class.getName());
         }
+
+        if (StringUtil.isEmpty(props.getProperty(Constants.MONITOR_APP))) {
+            props.setProperty(Constants.MONITOR_APP, StringUtil.EXPTY);
+        }
+
+        if (StringUtil.isEmpty(props.getProperty(Constants.MONITOR_TYPE))) {
+            props.setProperty(Constants.MONITOR_TYPE, StringUtil.EXPTY);
+        }
+
+        if (StringUtil.isEmpty(props.getProperty(Constants.MONITOR_HANDLE))) {
+            props.setProperty(Constants.MONITOR_HANDLE, ConsoleMonitorHandle.class.getName());
+        }
     }
 
     public static String getCachePrefix() {
@@ -122,6 +134,22 @@ public class PropertiesUtil {
 
     public static String getValidHandle() {
         return props.getProperty(Constants.VALID_HANDLE);
+    }
+
+    public static String getMonitorApp() {
+        return props.getProperty(Constants.MONITOR_APP);
+    }
+
+    public static String getMonitorType() {
+        return props.getProperty(Constants.MONITOR_TYPE);
+    }
+
+    public static String getMonitorHandle() {
+        return props.getProperty(Constants.MONITOR_HANDLE);
+    }
+
+    public static String getMonitorServers() {
+        return props.getProperty(Constants.MONITOR_SERVERS);
     }
 
 }

@@ -17,6 +17,7 @@ public interface Constants {
     String METHOD_LOG_AFTER = "logAfter";
     String METHOD_LIMIT = "limit";
     String METHOD_VALID = "valid";
+    String METHOD_MONITOR = "monitor";
     String VARIABLE_PREFIX = "_";
 
     // @Cache
@@ -58,5 +59,14 @@ public interface Constants {
     String VALID_INTERRUPT_NAME = "interrupt";
     String VALID_HANDLE = "valid.handle";
     String VALID_HANDLE_NAME = "handle";
+
+    // @Monitor
+    String MONITOR_APP = "monitor.app";
+    String MONITOR_APP_NAME = "app";
+    String MONITOR_TYPE = "monitor.type";
+    String MONITOR_TYPE_NAME = "type";
+    String MONITOR_HANDLE = "monitor.handle";
+    String MONITOR_HANDLE_NAME = "handle";
+    String MONITOR_SERVERS = "monitor.servers";
 
 }

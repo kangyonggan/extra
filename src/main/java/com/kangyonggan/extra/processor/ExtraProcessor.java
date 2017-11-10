@@ -22,7 +22,8 @@ import java.util.Set;
         "com.kangyonggan.extra.annotation.Frequency",
         "com.kangyonggan.extra.annotation.Cache",
         "com.kangyonggan.extra.annotation.CacheDel",
-        "com.kangyonggan.extra.annotation.Log"
+        "com.kangyonggan.extra.annotation.Log",
+        "com.kangyonggan.extra.annotation.Monitor"
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class ExtraProcessor extends AbstractProcessor {
@@ -51,6 +52,7 @@ public class ExtraProcessor extends AbstractProcessor {
         CacheProcessor.process(annotations, env);
         CacheDelProcessor.process(annotations, env);
         LogProcessor.process(annotations, env);
+        MonitorProcessor.process(annotations, env);
         return true;
     }
 
