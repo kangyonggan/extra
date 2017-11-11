@@ -6,7 +6,7 @@
 <dependency>
     <groupId>com.kangyonggan</groupId>
     <artifactId>extra</artifactId>
-    <version>1.1.3</version>
+    <version>1.1.5</version>
 </dependency>
 ```
 
@@ -100,6 +100,15 @@ valid.interrupt=false
 
 # default is com.kangyonggan.extra.handle.impl.ConsoleValidHandle
 #valid.handle=com.kangyonggan.extra.Log4j2ValidHandle
+
+# default is ""
+monitor.app=demo
+
+# default is ""
+#monitor.type=pay
+
+# default is ""
+monitor.servers=127.0.0.1:9917
 ```
 
 ### Annotations
@@ -125,6 +134,9 @@ valid.interrupt=false
 
 #### @Valid
 1. Valid the method arguments.
+
+#### @Monitor
+1. Monitor The Method! 
 
 ### Code And Demo
 [https://github.com/kangyonggan/extra.git](https://github.com/kangyonggan/extra.git)
