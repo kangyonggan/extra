@@ -20,6 +20,8 @@ public class Server extends Thread {
 
     private boolean isRuning;
 
+    private long lastSendTime;
+
     public Server(String ip, Integer port) {
         this.ip = ip;
         this.port = port;
@@ -69,7 +71,7 @@ public class Server extends Thread {
 
     public boolean send(MonitorInfo monitorInfo, int retryCount) {
         if (!isRuning) {
-            checkConnect();
+            getConnect();
         }
 
         if (!isRuning) {
@@ -81,6 +83,8 @@ public class Server extends Thread {
             out.write(json.getBytes());
             out.flush();
             socket.shutdownOutput();
+
+            lastSendTime = System.currentTimeMillis();
 
             return response();
         } catch (Exception e) {
@@ -104,10 +108,15 @@ public class Server extends Thread {
     }
 
     private void checkConnect() {
+        if (System.currentTimeMillis() - lastSendTime < 28000) {
+            return;
+        }
         try {
             out.write("00000000".getBytes());
             out.flush();
             socket.shutdownOutput();
+
+            lastSendTime = System.currentTimeMillis();
 
             if (!response()) {
                 getConnect();
