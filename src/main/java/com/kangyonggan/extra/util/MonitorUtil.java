@@ -1,12 +1,10 @@
 package com.kangyonggan.extra.util;
 
 import com.kangyonggan.extra.model.MonitorInfo;
+import com.kangyonggan.extra.model.Server;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author kangyonggan
@@ -14,76 +12,45 @@ import java.util.Map;
  */
 public class MonitorUtil {
 
-    private static String servers;
-    private static List<Map<String, Object>> serverList;
-    private static Method method;
-    private static Object object;
+    private static List<Server> servers = new ArrayList();
 
-    public static void monitor(String app, String type, String handlePackage, String packageName,
+    public static void monitor(String serversStr, String app, String type, String handlePackage, String packageName,
                                String className, String methodName, Object... args) {
-        if (StringUtil.isEmpty(servers) && initHandle(handlePackage)) {
-            MonitorInfo monitorInfo = new MonitorInfo(app, type, packageName, className, methodName, args);
-            try {
-                initServers();
-            } catch (Exception e) {
-                try {
-                    method.invoke(object, "Monitor Servers Init Exception!", e, monitorInfo);
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
+        MonitorInfo monitorInfo = new MonitorInfo(app, type, handlePackage, packageName, className, methodName, args);
 
+        if (servers.isEmpty()) {
+            try {
+                initServers(serversStr, monitorInfo);
+            } catch (Exception e) {
+                monitorInfo.error("Monitor Servers Init Exception", e);
                 return;
             }
+        }
 
-            for (Map<String, Object> server : serverList) {
+        for (Server server : servers) {
+            // Send To Server
+            if (server.send(monitorInfo, 3)) {
+                break;
+            }
+            monitorInfo.error("Method Information Send to [" + server.getIp() + ":" + server.getPort() + "] Failure");
+        }
+    }
+
+    private static void initServers(String serversStr, MonitorInfo monitorInfo) throws Exception {
+        synchronized (servers) {
+            if (!servers.isEmpty()) {
+                return;
+            }
+            for (String arr : serversStr.split(",")) {
                 try {
-                    // Send To Server
-                    boolean success = send(server, monitorInfo);
-                    if (success) {
-                        break;
-                    }
+                    String serverArr[] = arr.split(":");
+                    Server server = new Server(serverArr[0], Integer.parseInt(serverArr[1]));
+
+                    servers.add(server);
                 } catch (Exception e) {
-                    try {
-                        method.invoke(object, "Method Information Send to [" + server.get("ip") + ":" + server.get("port") + "] Failure!", e, monitorInfo);
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }
+                    monitorInfo.error("Init Server Exception", e);
                 }
             }
-        }
-    }
-
-    private static boolean send(Map<String, Object> server, MonitorInfo monitorInfo) {
-        // TODO
-        return false;
-    }
-
-    private static boolean initHandle(String handlePackage) {
-        try {
-            Class clazz = Class.forName(handlePackage);
-            method = clazz.getDeclaredMethod("error", Exception.class, MonitorInfo.class);
-            object = clazz.newInstance();
-        } catch (Exception e1) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private static synchronized void initServers() throws Exception {
-        if (StringUtil.isNotEmpty(servers)) {
-            return;
-        }
-
-        servers = PropertiesUtil.getMonitorServers();
-        serverList = new ArrayList();
-        for (String server : servers.split(",")) {
-            Map<String, Object> map = new HashMap(1);
-            String serverArr[] = server.split(":");
-            map.put("ip", serverArr[0]);
-            map.put("port", Integer.parseInt(serverArr[1]));
-
-            serverList.add(map);
         }
     }
 

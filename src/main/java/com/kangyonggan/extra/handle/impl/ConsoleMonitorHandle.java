@@ -11,6 +11,10 @@ public class ConsoleMonitorHandle implements MonitorHandle {
 
     @Override
     public void error(String errMsg, Exception e, MonitorInfo monitorInfo) {
-
+        if (e == null) {
+            System.out.println(errMsg + "\n" + monitorInfo);
+        } else {
+            System.out.println(errMsg + ", " + e.getMessage() + "\n" + monitorInfo);
+        }
     }
 }

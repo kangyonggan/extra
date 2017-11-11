@@ -1,6 +1,7 @@
 package com.kangyonggan.extra.model;
 
-import java.util.Arrays;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 /**
  * @author kangyonggan
@@ -10,21 +11,36 @@ public class MonitorInfo {
 
     private String app;
     private String type;
+    private String handlePackage;
     private String packageName;
     private String className;
     private String methodName;
     private Object args[];
+    private MonitorHandleInfo monitorHandleInfo;
 
-    public MonitorInfo() {
-    }
-
-    public MonitorInfo(String app, String type, String packageName, String className, String methodName, Object[] args) {
+    public MonitorInfo(String app, String type, String handlePackage, String packageName, String className, String methodName, Object[] args) {
         this.app = app;
         this.type = type;
+        this.handlePackage = handlePackage;
         this.packageName = packageName;
         this.className = className;
         this.methodName = methodName;
         this.args = args;
+        this.monitorHandleInfo = MonitorHandleInfoFactory.getInstance().getMonitorHandleInfo(handlePackage);
+    }
+
+    public void error(String msg, Exception e) {
+        if (monitorHandleInfo != null) {
+            try {
+                monitorHandleInfo.getMethod().invoke(monitorHandleInfo.getObject(), msg, e, this);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    public void error(String msg) {
+        error(msg, null);
     }
 
     public String getApp() {
@@ -41,6 +57,14 @@ public class MonitorInfo {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getHandlePackage() {
+        return handlePackage;
+    }
+
+    public void setHandlePackage(String handlePackage) {
+        this.handlePackage = handlePackage;
     }
 
     public String getPackageName() {
@@ -75,15 +99,25 @@ public class MonitorInfo {
         this.args = args;
     }
 
+    public MonitorHandleInfo getMonitorHandleInfo() {
+        return monitorHandleInfo;
+    }
+
+    public void setMonitorHandleInfo(MonitorHandleInfo monitorHandleInfo) {
+        this.monitorHandleInfo = monitorHandleInfo;
+    }
+
     @Override
     public String toString() {
         return "MonitorInfo{" +
                 "app='" + app + '\'' +
                 ", type='" + type + '\'' +
+                ", handlePackage='" + handlePackage + '\'' +
                 ", packageName='" + packageName + '\'' +
                 ", className='" + className + '\'' +
                 ", methodName='" + methodName + '\'' +
                 ", args=" + Arrays.toString(args) +
+                ", monitorHandleInfo=" + monitorHandleInfo +
                 '}';
     }
 }

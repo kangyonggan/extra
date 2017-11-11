@@ -46,9 +46,10 @@ public class MonitorProcessor {
                 ListBuffer<JCTree.JCStatement> statements = new ListBuffer();
 
                 /**
-                 * create code: MonitorUtil.monitor(app, type, handlePackage, packageName, className, methodName, args);
+                 * create code: MonitorUtil.monitor(serversStr, app, type, handlePackage, packageName, className, methodName, args);
                  */
                 JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(MonitorUtil.class.getSimpleName())), names.fromString(Constants.METHOD_MONITOR));
+                String serversStr = PropertiesUtil.getMonitorServers();
                 String app = (String) JCTreeUtil.getAnnotationParameter(element, Monitor.class, Constants.MONITOR_APP_NAME, PropertiesUtil.getMonitorApp());
                 String type = (String) JCTreeUtil.getAnnotationParameter(element, Monitor.class, Constants.MONITOR_TYPE_NAME, PropertiesUtil.getMonitorType());
                 String handlePackageName = (String) JCTreeUtil.getAnnotationParameter(element, Monitor.class, Constants.MONITOR_HANDLE_NAME, PropertiesUtil.getMonitorHandle());
@@ -57,6 +58,7 @@ public class MonitorProcessor {
                 packageName = packageName.substring(0, packageName.lastIndexOf("."));
 
                 ListBuffer<JCTree.JCExpression> monitorArgs = new ListBuffer();
+                monitorArgs.append(treeMaker.Literal(serversStr));
                 monitorArgs.append(treeMaker.Literal(app));
                 monitorArgs.append(treeMaker.Literal(type));
                 monitorArgs.append(treeMaker.Literal(handlePackageName));
