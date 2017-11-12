@@ -50,9 +50,9 @@ public class MonitorProcessor {
                  */
                 JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(MonitorUtil.class.getSimpleName())), names.fromString(Constants.METHOD_MONITOR));
                 String serversStr = PropertiesUtil.getMonitorServers();
-                String app = (String) JCTreeUtil.getAnnotationParameter(element, Monitor.class, Constants.MONITOR_APP_NAME, PropertiesUtil.getMonitorApp());
+                String app = PropertiesUtil.getMonitorApp();
                 String type = (String) JCTreeUtil.getAnnotationParameter(element, Monitor.class, Constants.MONITOR_TYPE_NAME, PropertiesUtil.getMonitorType());
-                String handlePackageName = (String) JCTreeUtil.getAnnotationParameter(element, Monitor.class, Constants.MONITOR_HANDLE_NAME, PropertiesUtil.getMonitorHandle());
+                String handlePackageName = PropertiesUtil.getMonitorHandle();
                 String packageName = JCTreeUtil.getPackageName(element);
                 String className = packageName.substring(packageName.lastIndexOf(".") + 1);
                 packageName = packageName.substring(0, packageName.lastIndexOf("."));

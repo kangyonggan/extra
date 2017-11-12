@@ -1,12 +1,13 @@
 package com.kangyonggan.extra.model;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.kangyonggan.extra.util.MonitorUtil;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 
-public class Server extends Thread {
+public class Server {
 
     private String ip;
 
@@ -14,97 +15,93 @@ public class Server extends Thread {
 
     private Socket socket;
 
-    private InputStream in;
-
-    private OutputStream out;
+    private BufferedWriter write;
 
     private boolean isRuning;
 
     private long lastSendTime;
 
+    private Object lock;
+
     public Server(String ip, Integer port) {
         this.ip = ip;
         this.port = port;
+        lock = new Object();
         init();
     }
 
     private void init() {
         getConnect();
-        this.start();
-    }
 
-    @Override
-    public void run() {
-        while (true) {
-            try {
-                Thread.sleep(30000);
-                checkConnect();
-            } catch (Exception e) {
-                e.printStackTrace();
+        // checkConnectThread
+        new Thread() {
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(30000);
+                    } catch (Exception e) {
+                        MonitorUtil.error("Check Connect Exception When Sleep", e);
+                    }
+
+                    checkConnect();
+                    System.out.println("check connect");
+                }
             }
-        }
+        }.start();
+
+        // sendPackageThread
+        new Thread() {
+            public void run() {
+                while (true) {
+                    MonitorInfo monitor = MonitorUtil.getMonitorInfo();
+                    System.out.println("take a monitor info " + monitor);
+                    if (monitor == null) {
+                        try {
+                            synchronized (lock) {
+                                System.out.println("wait");
+                                lock.wait();
+                            }
+                        } catch (InterruptedException e) {
+                            MonitorUtil.error("Send Package Thread Wait Exception", e);
+                        }
+                    } else {
+                        send(monitor, 1);
+                    }
+                }
+            }
+        }.start();
     }
 
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public Integer getPort() {
-        return port;
-    }
-
-    public void setPort(Integer port) {
-        this.port = port;
-    }
-
-    public Socket getSocket() {
-        return socket;
-    }
-
-    public void setSocket(Socket socket) {
-        this.socket = socket;
-    }
-
-    public boolean send(MonitorInfo monitorInfo, int retryCount) {
+    public void send(MonitorInfo monitorInfo, int retryCount) {
         if (!isRuning) {
             getConnect();
         }
 
         if (!isRuning) {
-            return false;
+            MonitorUtil.error("Send Package Thread Wait Exception", monitorInfo);
+            // put back to queue
+            MonitorUtil.putMonitorInfo(monitorInfo);
+            return;
         }
 
         try {
-            String json = JSON.toJSONString(monitorInfo);
-            out.write(json.getBytes());
-            out.flush();
+            write.write(JSONObject.toJSONString(monitorInfo));
+
+            write.flush();
             socket.shutdownOutput();
 
+            System.out.println("send success");
             lastSendTime = System.currentTimeMillis();
-
-            return response();
         } catch (Exception e) {
+            MonitorUtil.error("Send Monitor Info Exception", e);
             isRuning = false;
             if (retryCount > 0) {
-                return send(monitorInfo, --retryCount);
+                send(monitorInfo, --retryCount);
             }
-            return false;
-        }
-    }
 
-    private boolean response() throws Exception {
-        byte[] buff = new byte[1024];
-        int len;
-        StringBuilder resp = new StringBuilder();
-        while ((len = in.read(buff)) != -1) {
-            resp.append(new String(buff, 0, len));
+            // put back to queue
+            MonitorUtil.putMonitorInfo(monitorInfo);
         }
-
-        return "success".equals(resp.toString());
     }
 
     private void checkConnect() {
@@ -112,16 +109,14 @@ public class Server extends Thread {
             return;
         }
         try {
-            out.write("00000000".getBytes());
-            out.flush();
+            write.write("00000000");
+
+            write.flush();
             socket.shutdownOutput();
 
             lastSendTime = System.currentTimeMillis();
-
-            if (!response()) {
-                getConnect();
-            }
         } catch (Exception e) {
+            MonitorUtil.error("Check Connect Exception When Send Heartbeat", e);
             getConnect();
         }
     }
@@ -129,11 +124,23 @@ public class Server extends Thread {
     public void getConnect() {
         try {
             socket = new Socket(ip, port);
-            in = socket.getInputStream();
-            out = socket.getOutputStream();
+            write = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             isRuning = true;
+            System.out.println("get a connect success");
         } catch (Exception e) {
+            MonitorUtil.error("Get Connect Exception", e);
             isRuning = false;
+        }
+    }
+
+    public void unlock() {
+        try {
+            synchronized (lock) {
+                lock.notifyAll();
+            }
+            System.out.println("unlock success");
+        } catch (Exception e) {
+            MonitorUtil.error("Unlock Exception", e);
         }
     }
 }

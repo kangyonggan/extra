@@ -1,46 +1,34 @@
 package com.kangyonggan.extra.model;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Date;
 
 /**
  * @author kangyonggan
  * @since 11/10/17
  */
-public class MonitorInfo {
+public class MonitorInfo implements Serializable {
 
     private String app;
     private String type;
-    private String handlePackage;
     private String packageName;
     private String className;
     private String methodName;
+    private Date date;
     private Object args[];
-    private MonitorHandleInfo monitorHandleInfo;
 
-    public MonitorInfo(String app, String type, String handlePackage, String packageName, String className, String methodName, Object[] args) {
+    public MonitorInfo() {
+    }
+
+    public MonitorInfo(String app, String type, String packageName, String className, String methodName, Object[] args) {
         this.app = app;
         this.type = type;
-        this.handlePackage = handlePackage;
         this.packageName = packageName;
         this.className = className;
         this.methodName = methodName;
         this.args = args;
-        this.monitorHandleInfo = MonitorHandleInfoFactory.getInstance().getMonitorHandleInfo(handlePackage);
-    }
-
-    public void error(String msg, Exception e) {
-        if (monitorHandleInfo != null) {
-            try {
-                monitorHandleInfo.getMethod().invoke(monitorHandleInfo.getObject(), msg, e, this);
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-        }
-    }
-
-    public void error(String msg) {
-        error(msg, null);
+        this.date = new Date();
     }
 
     public String getApp() {
@@ -57,14 +45,6 @@ public class MonitorInfo {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public String getHandlePackage() {
-        return handlePackage;
-    }
-
-    public void setHandlePackage(String handlePackage) {
-        this.handlePackage = handlePackage;
     }
 
     public String getPackageName() {
@@ -91,6 +71,14 @@ public class MonitorInfo {
         this.methodName = methodName;
     }
 
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     public Object[] getArgs() {
         return args;
     }
@@ -99,25 +87,16 @@ public class MonitorInfo {
         this.args = args;
     }
 
-    public MonitorHandleInfo getMonitorHandleInfo() {
-        return monitorHandleInfo;
-    }
-
-    public void setMonitorHandleInfo(MonitorHandleInfo monitorHandleInfo) {
-        this.monitorHandleInfo = monitorHandleInfo;
-    }
-
     @Override
     public String toString() {
         return "MonitorInfo{" +
                 "app='" + app + '\'' +
                 ", type='" + type + '\'' +
-                ", handlePackage='" + handlePackage + '\'' +
                 ", packageName='" + packageName + '\'' +
                 ", className='" + className + '\'' +
                 ", methodName='" + methodName + '\'' +
+                ", date='" + date + '\'' +
                 ", args=" + Arrays.toString(args) +
-                ", monitorHandleInfo=" + monitorHandleInfo +
                 '}';
     }
 }

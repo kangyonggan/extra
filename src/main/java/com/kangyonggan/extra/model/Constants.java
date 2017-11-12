@@ -62,11 +62,9 @@ public interface Constants {
 
     // @Monitor
     String MONITOR_APP = "monitor.app";
-    String MONITOR_APP_NAME = "app";
     String MONITOR_TYPE = "monitor.type";
     String MONITOR_TYPE_NAME = "type";
     String MONITOR_HANDLE = "monitor.handle";
-    String MONITOR_HANDLE_NAME = "handle";
     String MONITOR_SERVERS = "monitor.servers";
 
 }
