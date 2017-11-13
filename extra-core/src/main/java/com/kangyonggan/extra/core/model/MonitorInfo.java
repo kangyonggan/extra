@@ -14,7 +14,7 @@ public class MonitorInfo implements Serializable {
     private String packageName;
     private String className;
     private String methodName;
-    private Long startTime;
+    private Long beginTime;
     private Long endTime;
     private Object returnValue;
     private Object args[];
@@ -22,13 +22,13 @@ public class MonitorInfo implements Serializable {
     public MonitorInfo() {
     }
 
-    public MonitorInfo(String app, String type, String packageName, String className, String methodName, Long startTime, Long endTime, Object returnValue, Object[] args) {
+    public MonitorInfo(String app, String type, String packageName, String className, String methodName, Long beginTime, Long endTime, Object returnValue, Object[] args) {
         this.app = app;
         this.type = type;
         this.packageName = packageName;
         this.className = className;
         this.methodName = methodName;
-        this.startTime = startTime;
+        this.beginTime = beginTime;
         this.endTime = endTime;
         this.returnValue = returnValue;
         this.args = args;
@@ -74,12 +74,12 @@ public class MonitorInfo implements Serializable {
         this.methodName = methodName;
     }
 
-    public Long getStartTime() {
-        return startTime;
+    public Long getBeginTime() {
+        return beginTime;
     }
 
-    public void setStartTime(Long startTime) {
-        this.startTime = startTime;
+    public void setBeginTime(Long startTime) {
+        this.beginTime = beginTime;
     }
 
     public Long getEndTime() {
@@ -114,7 +114,7 @@ public class MonitorInfo implements Serializable {
                 ", packageName='" + packageName + '\'' +
                 ", className='" + className + '\'' +
                 ", methodName='" + methodName + '\'' +
-                ", startTime=" + startTime +
+                ", beginTime=" + beginTime +
                 ", endTime=" + endTime +
                 ", returnValue=" + returnValue +
                 ", args=" + Arrays.toString(args) +
