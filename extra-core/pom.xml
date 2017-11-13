@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>extra</artifactId>
+        <groupId>com.kangyonggan</groupId>
+        <version>1.1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>extra-core</artifactId>
+
+    <name>Extra Core</name>
+    <description>Java Compile Annotation Extra</description>
+
+    <build>
+        <plugins>
+            <!--compiler plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${plugin.compiler.level}</source>
+                    <target>${plugin.compiler.level}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <compilerArgument>-proc:none</compilerArgument>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>sun.jdk</groupId>
+            <artifactId>tools</artifactId>
+            <version>${tools.version}</version>
+            <scope>system</scope>
+            <systemPath>${java.home}/../lib/tools.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.kangyonggan</groupId>
+            <artifactId>jcel</artifactId>
+            <version>${jcel.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>

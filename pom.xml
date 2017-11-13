@@ -6,8 +6,13 @@
 
     <groupId>com.kangyonggan</groupId>
     <artifactId>extra</artifactId>
-    <packaging>jar</packaging>
-    <version>1.1.5</version>
+    <packaging>pom</packaging>
+    <version>1.1.0</version>
+
+    <modules>
+        <module>extra-core</module>
+        <module>extra-test</module>
+    </modules>
 
     <name>Extra</name>
     <description>Java Code Extra</description>
@@ -34,6 +39,7 @@
 
     <properties>
         <!--Project-->
+        <project.build.varsion>1.1.0</project.build.varsion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!--Plugins-->
@@ -46,41 +52,44 @@
     </properties>
 
     <build>
-        <plugins>
-            <!--compiler plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${plugin.compiler.version}</version>
-                <configuration>
-                    <source>${plugin.compiler.level}</source>
-                    <target>${plugin.compiler.level}</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                    <compilerArgument>-proc:none</compilerArgument>
-                </configuration>
-            </plugin>
-        </plugins>
+        <pluginManagement>
+            <plugins>
+                <!--compiler plugin -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${plugin.compiler.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
-    <dependencies>
-        <dependency>
-            <groupId>sun.jdk</groupId>
-            <artifactId>tools</artifactId>
-            <version>${tools.version}</version>
-            <scope>system</scope>
-            <systemPath>${java.home}/../lib/tools.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>${fastjson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.kangyonggan</groupId>
-            <artifactId>jcel</artifactId>
-            <version>${jcel.version}</version>
-        </dependency>
-    </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>extra-core</artifactId>
+                <version>${project.build.varsion}</version>
+            </dependency>
+            <dependency>
+                <groupId>sun.jdk</groupId>
+                <artifactId>tools</artifactId>
+                <version>${tools.version}</version>
+                <scope>system</scope>
+                <systemPath>${java.home}/../lib/tools.jar</systemPath>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kangyonggan</groupId>
+                <artifactId>jcel</artifactId>
+                <version>${jcel.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <profiles>
         <profile>
