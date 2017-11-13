@@ -88,7 +88,7 @@ public class MonitorInfo implements Serializable {
         return beginTime;
     }
 
-    public void setBeginTime(Long startTime) {
+    public void setBeginTime(Long beginTime) {
         this.beginTime = beginTime;
     }
 
