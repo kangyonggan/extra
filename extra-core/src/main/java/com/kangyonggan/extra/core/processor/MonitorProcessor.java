@@ -126,35 +126,61 @@ public class MonitorProcessor {
             JCTree.JCIf jcIf = (JCTree.JCIf) statement;
             JCTree.JCBlock block;
             if (jcIf.thenpart != null) {
-                block = (JCTree.JCBlock) jcIf.thenpart;
-                doBlock(element, block);
-                jcIf.thenpart = block;
+                if (jcIf.thenpart instanceof JCTree.JCBlock) {
+                    block = (JCTree.JCBlock) jcIf.thenpart;
+                    doBlock(element, block);
+                    jcIf.thenpart = block;
+                } else {
+                    ListBuffer<JCTree.JCStatement> stats = processStatment(element, jcIf.thenpart);
+                    jcIf.thenpart = treeMaker.Block(stats.size(), stats.toList());
+                }
             } else if (jcIf.elsepart != null) {
-                block = (JCTree.JCBlock) jcIf.elsepart;
-                doBlock(element, block);
-                jcIf.elsepart = block;
+                if (jcIf.elsepart instanceof JCTree.JCBlock) {
+                    block = (JCTree.JCBlock) jcIf.elsepart;
+                    doBlock(element, block);
+                    jcIf.elsepart = block;
+                } else {
+                    ListBuffer<JCTree.JCStatement> stats = processStatment(element, jcIf.elsepart);
+                    jcIf.elsepart = treeMaker.Block(stats.size(), stats.toList());
+                }
             }
 
             statements.append(jcIf);
         } else if (statement instanceof JCTree.JCForLoop) {
             JCTree.JCForLoop forLoop = (JCTree.JCForLoop) statement;
-            JCTree.JCBlock block = (JCTree.JCBlock) forLoop.body;
-            doBlock(element, block);
-            forLoop.body = block;
+
+            if (forLoop.body instanceof JCTree.JCBlock) {
+                JCTree.JCBlock block = (JCTree.JCBlock) forLoop.body;
+                doBlock(element, block);
+                forLoop.body = block;
+            } else {
+                ListBuffer<JCTree.JCStatement> stats = processStatment(element, forLoop.body);
+                forLoop.body = treeMaker.Block(stats.size(), stats.toList());
+            }
 
             statements.append(forLoop);
         } else if (statement instanceof JCTree.JCDoWhileLoop) {
             JCTree.JCDoWhileLoop doWhileLoop = (JCTree.JCDoWhileLoop) statement;
-            JCTree.JCBlock block = (JCTree.JCBlock) doWhileLoop.body;
-            doBlock(element, block);
-            doWhileLoop.body = block;
+            if (doWhileLoop.body instanceof JCTree.JCBlock) {
+                JCTree.JCBlock block = (JCTree.JCBlock) doWhileLoop.body;
+                doBlock(element, block);
+                doWhileLoop.body = block;
+            } else {
+                ListBuffer<JCTree.JCStatement> stats = processStatment(element, doWhileLoop.body);
+                doWhileLoop.body = treeMaker.Block(stats.size(), stats.toList());
+            }
 
             statements.append(doWhileLoop);
         } else if (statement instanceof JCTree.JCWhileLoop) {
             JCTree.JCWhileLoop whileLoop = (JCTree.JCWhileLoop) statement;
-            JCTree.JCBlock block = (JCTree.JCBlock) whileLoop.body;
-            doBlock(element, block);
-            whileLoop.body = block;
+            if (whileLoop.body instanceof JCTree.JCBlock) {
+                JCTree.JCBlock block = (JCTree.JCBlock) whileLoop.body;
+                doBlock(element, block);
+                whileLoop.body = block;
+            } else {
+                ListBuffer<JCTree.JCStatement> stats = processStatment(element, whileLoop.body);
+                whileLoop.body = treeMaker.Block(stats.size(), stats.toList());
+            }
 
             statements.append(whileLoop);
         } else {

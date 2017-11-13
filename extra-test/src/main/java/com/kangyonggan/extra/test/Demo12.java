@@ -13,15 +13,13 @@ public class Demo12 {
 //    @Cache(key = "xxx")
     @Monitor
     public static String hello(String name) {
-        while (name != null) {
-            System.out.println(name);
-            if (name.equals("222")) {
-                System.out.println("xxxxxxx");
-                return name;
-            }
+        if (name == null) {
+            System.out.println("xx");
+            System.out.println("yy");
+            return "xxx";
         }
 
-        System.out.println("xxx");
+        if (name != null) return "0";
         return name;
 
     }

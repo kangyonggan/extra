@@ -7,7 +7,7 @@
     <groupId>com.kangyonggan</groupId>
     <artifactId>extra</artifactId>
     <packaging>pom</packaging>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
 
     <modules>
         <module>extra-core</module>
@@ -39,7 +39,7 @@
 
     <properties>
         <!--Project-->
-        <project.build.varsion>2.0.1</project.build.varsion>
+        <project.build.varsion>2.0.2</project.build.varsion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!--Plugins-->
