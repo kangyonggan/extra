@@ -16,9 +16,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import java.util.Set;
 
-import static com.kangyonggan.extra.util.JCTreeUtil.names;
-import static com.kangyonggan.extra.util.JCTreeUtil.treeMaker;
-import static com.kangyonggan.extra.util.JCTreeUtil.trees;
+import static com.kangyonggan.extra.util.JCTreeUtil.*;
 
 /**
  * @author kangyonggan
@@ -36,63 +34,8 @@ public class LogProcessor {
                 JCTreeUtil.defineVariable(element, className, List.of(treeMaker.Literal(JCTreeUtil.getPackageName(element))));
 
                 generateBlockCode(element, className);
-                generateReturnCode(element, className);
             }
         }
-    }
-
-    /**
-     * @param element
-     * @param className
-     */
-    private static void generateReturnCode(Element element, String className) {
-        String varName = Constants.VARIABLE_PREFIX + StringUtil.firstToLowerCase(className);
-        JCTree tree = (JCTree) trees.getTree(element.getEnclosingElement());
-
-        tree.accept(new TreeTranslator() {
-            private boolean isTargetMethod;
-
-            @Override
-            public void visitMethodDef(JCTree.JCMethodDecl jcMethodDecl) {
-                if (jcMethodDecl.sym != null) {
-                    isTargetMethod = element.toString().equals(jcMethodDecl.sym.toString());
-                }
-                super.visitMethodDef(jcMethodDecl);
-            }
-
-            @Override
-            public void visitAnnotation(JCTree.JCAnnotation jcAnnotation) {
-                if (isTargetMethod) {
-                    boolean isTargetAnno = Log.class.getSimpleName().equals(jcAnnotation.annotationType.toString());
-                    if (isTargetAnno) {
-                        isTargetMethod = true;
-                    }
-                }
-                super.visitAnnotation(jcAnnotation);
-            }
-
-            @Override
-            public void visitReturn(JCTree.JCReturn jcReturn) {
-                if (!isTargetMethod) {
-                    super.visitReturn(jcReturn);
-                    return;
-                }
-
-
-                JCTree.JCExpression returnType = JCTreeUtil.getReturnType(element);
-                if (returnType != null && !returnType.toString().equals(Constants.RETURN_VOID)) {
-                    /**
-                     * create code: return (ReturnType) xxxHandle.logAfter(methodName, returnValue);
-                     */
-                    JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString("logAfter"));
-                    JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(JCTreeUtil.getMethodName(element), treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "methodStartTime")), jcReturn.getExpression()));
-
-                    JCTree.JCTypeCast jcTypeCast = treeMaker.TypeCast(JCTreeUtil.getReturnType(element), methodInvocation);
-                    jcReturn.expr = jcTypeCast;
-                }
-                this.result = jcReturn;
-            }
-        });
     }
 
     /**
@@ -133,38 +76,112 @@ public class LogProcessor {
 
                 JCTree.JCExpression returnType = JCTreeUtil.getReturnType(element);
                 for (int i = 0; i < tree.getStatements().size(); i++) {
+                    JCTree.JCStatement statement = tree.getStatements().get(i);
+
+                    ListBuffer<JCTree.JCStatement> transStats = processStatment(element, varName, statement);
+                    for (JCTree.JCStatement stat : transStats) {
+                        statements.append(stat);
+                    }
+
                     if (i == tree.getStatements().size() - 1) {
                         if (returnType == null || returnType.toString().equals(Constants.RETURN_VOID)) {
-                            if (tree.getStatements().get(i) instanceof JCTree.JCReturn) {
-                                /**
-                                 * create code: xxxHandle.logAfter(methodName, null);
-                                 */
-                                fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString(Constants.METHOD_LOG_AFTER));
-                                methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(JCTreeUtil.getMethodName(element), treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "methodStartTime")), JCTreeUtil.getNull()));
-
-                                statements.append(treeMaker.Exec(methodInvocation));
-                                statements.append(tree.getStatements().get(i));
-                            } else {
-                                statements.append(tree.getStatements().get(i));
-                                /**
-                                 * create code: xxxHandle.logAfter(methodName, null);
-                                 */
-                                fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString(Constants.METHOD_LOG_AFTER));
-                                methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(JCTreeUtil.getMethodName(element), treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "methodStartTime")), JCTreeUtil.getNull()));
-
-                                statements.append(treeMaker.Exec(methodInvocation));
+                            if (!(statement instanceof JCTree.JCReturn)) {// return;
+                                statements.append(createLogAfter(varName, element));
                             }
-                        } else {
-                            statements.append(tree.getStatements().get(i));
                         }
-                    } else {
-                        statements.append(tree.getStatements().get(i));
                     }
                 }
 
                 result = treeMaker.Block(0, statements.toList());
             }
         });
+    }
+
+    private static ListBuffer<JCTree.JCStatement> processStatment(Element element, String varName, JCTree.JCStatement statement) {
+        ListBuffer<JCTree.JCStatement> statements = new ListBuffer();
+        if (statement instanceof JCTree.JCReturn) {
+            JCTree.JCReturn jcReturn = (JCTree.JCReturn) statement;
+            if (jcReturn.expr == null) {// return;
+                statements.append(createLogAfter(varName, element));
+                statements.append(statement);
+            } else {// return xxx;
+                /**
+                 * create code: return (ReturnType) xxxHandle.logAfter(methodName, returnValue);
+                 */
+                JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString("logAfter"));
+                JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(JCTreeUtil.getMethodName(element), treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "methodStartTime")), jcReturn.getExpression()));
+
+                JCTree.JCTypeCast jcTypeCast = treeMaker.TypeCast(JCTreeUtil.getReturnType(element), methodInvocation);
+                jcReturn.expr = jcTypeCast;
+                statements.append(jcReturn);
+            }
+        } else if (statement instanceof JCTree.JCIf) {
+            JCTree.JCIf jcIf = (JCTree.JCIf) statement;
+            JCTree.JCBlock block;
+            if (jcIf.thenpart != null) {
+                block = (JCTree.JCBlock) jcIf.thenpart;
+                doBlock(element, varName, block);
+                jcIf.thenpart = block;
+            } else if (jcIf.elsepart != null) {
+                block = (JCTree.JCBlock) jcIf.elsepart;
+                doBlock(element, varName, block);
+                jcIf.elsepart = block;
+            }
+
+            statements.append(jcIf);
+        } else if (statement instanceof JCTree.JCForLoop) {
+            JCTree.JCForLoop forLoop = (JCTree.JCForLoop) statement;
+            JCTree.JCBlock block = (JCTree.JCBlock) forLoop.body;
+            doBlock(element, varName, block);
+            forLoop.body = block;
+
+            statements.append(forLoop);
+        } else if (statement instanceof JCTree.JCDoWhileLoop) {
+            JCTree.JCDoWhileLoop doWhileLoop = (JCTree.JCDoWhileLoop) statement;
+            JCTree.JCBlock block = (JCTree.JCBlock) doWhileLoop.body;
+            doBlock(element, varName, block);
+            doWhileLoop.body = block;
+
+            statements.append(doWhileLoop);
+        } else if (statement instanceof JCTree.JCWhileLoop) {
+            JCTree.JCWhileLoop whileLoop = (JCTree.JCWhileLoop) statement;
+            JCTree.JCBlock block = (JCTree.JCBlock) whileLoop.body;
+            doBlock(element, varName, block);
+            whileLoop.body = block;
+
+            statements.append(whileLoop);
+        } else {
+            statements.append(statement);
+        }
+
+        return statements;
+    }
+
+    private static void doBlock(Element element, String varName, JCTree.JCBlock block) {
+        ListBuffer<JCTree.JCStatement> stats = new ListBuffer();
+        for (JCTree.JCStatement st : block.getStatements()) {
+            ListBuffer<JCTree.JCStatement> ss = processStatment(element, varName, st);
+
+            for (JCTree.JCStatement stat : ss) {
+                stats.append(stat);
+            }
+        }
+
+        block.stats = stats.toList();
+    }
+
+    /**
+     * create code: xxxHandle.logAfter(methodName, returnValue);
+     *
+     * @param varName
+     * @param element
+     * @return
+     */
+    private static JCTree.JCStatement createLogAfter(String varName, Element element) {
+        JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString("logAfter"));
+        JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(JCTreeUtil.getMethodName(element), treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "methodStartTime")), JCTreeUtil.getNull()));
+
+        return treeMaker.Exec(methodInvocation);
     }
 
 }

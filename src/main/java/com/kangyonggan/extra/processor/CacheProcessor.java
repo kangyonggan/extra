@@ -17,9 +17,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import java.util.Set;
 
-import static com.kangyonggan.extra.util.JCTreeUtil.names;
-import static com.kangyonggan.extra.util.JCTreeUtil.treeMaker;
-import static com.kangyonggan.extra.util.JCTreeUtil.trees;
+import static com.kangyonggan.extra.util.JCTreeUtil.*;
 
 /**
  * @author kangyonggan
@@ -41,73 +39,9 @@ public class CacheProcessor {
                 String className = handlePackageName.substring(handlePackageName.lastIndexOf(".") + 1);
                 JCTreeUtil.defineVariable(element, className, List.nil());
 
-                generateReturnCode(element, className, returnType);
                 generateBlockCode(element, className, returnType);
             }
         }
-    }
-
-    /**
-     * @param element
-     * @param className
-     * @param returnType
-     */
-    private static void generateReturnCode(Element element, String className, JCTree.JCExpression returnType) {
-        String varName = Constants.VARIABLE_PREFIX + StringUtil.firstToLowerCase(className);
-        JCTree tree = (JCTree) trees.getTree(element.getEnclosingElement());
-
-        tree.accept(new TreeTranslator() {
-            private boolean isTargetMethod;
-
-            @Override
-            public void visitMethodDef(JCTree.JCMethodDecl jcMethodDecl) {
-                if (jcMethodDecl.sym != null) {
-                    isTargetMethod = element.toString().equals(jcMethodDecl.sym.toString());
-                }
-                super.visitMethodDef(jcMethodDecl);
-            }
-
-            @Override
-            public void visitAnnotation(JCTree.JCAnnotation jcAnnotation) {
-                if (isTargetMethod) {
-                    boolean isTargetAnno = Cache.class.getSimpleName().equals(jcAnnotation.annotationType.toString());
-                    if (isTargetAnno) {
-                        isTargetMethod = true;
-                    }
-                }
-                super.visitAnnotation(jcAnnotation);
-            }
-
-            @Override
-            public void visitReturn(JCTree.JCReturn jcReturn) {
-                if (!isTargetMethod) {
-                    super.visitReturn(jcReturn);
-                    return;
-                }
-
-                /**
-                 * create code: return (ReturnType) xxxHandle.set(key, returnValue, expire);
-                 */
-                String key = (String) JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_KEY_NAME);
-                JCTree.JCExpression keyExpr = KeyExpressionUtil.parse(key);
-
-                String prefix = (String) JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_PREFIX_NAME, PropertiesUtil.getCachePrefix());
-                if (StringUtil.isNotEmpty(prefix)) {
-                    JCTree.JCExpression prefixExpr = treeMaker.Literal(prefix);
-                    keyExpr = treeMaker.Binary(JCTree.Tag.PLUS, prefixExpr, keyExpr);
-                }
-
-                Long expire = (Long) JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_EXPIRE_NAME, PropertiesUtil.getCacheExpire());
-                JCTree.JCLiteral expireExpr = treeMaker.Literal(expire);
-
-                JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString(Constants.METHOD_SET));
-                JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(keyExpr, jcReturn.getExpression(), expireExpr));
-
-                JCTree.JCTypeCast jcTypeCast = treeMaker.TypeCast(returnType, methodInvocation);
-                jcReturn.expr = jcTypeCast;
-                this.result = jcReturn;
-            }
-        });
     }
 
     /**
@@ -146,8 +80,21 @@ public class CacheProcessor {
                 JCTree.JCIf jcIf = treeMaker.If(condition, statementTrue, null);
                 statements.append(jcIf);
 
-                for (JCTree.JCStatement jcStatement : tree.getStatements()) {
-                    statements.append(jcStatement);
+                for (int i = 0; i < tree.getStatements().size(); i++) {
+                    JCTree.JCStatement statement = tree.getStatements().get(i);
+
+                    ListBuffer<JCTree.JCStatement> transStats = processStatment(element, varName, statement);
+                    for (JCTree.JCStatement stat : transStats) {
+                        statements.append(stat);
+                    }
+
+                    if (i == tree.getStatements().size() - 1) {
+                        if (returnType == null || returnType.toString().equals(Constants.RETURN_VOID)) {
+                            if (!(statement instanceof JCTree.JCReturn)) {// return;
+                                statements.append(createSet(varName, element));
+                            }
+                        }
+                    }
                 }
 
                 result = treeMaker.Block(0, statements.toList());
@@ -155,4 +102,114 @@ public class CacheProcessor {
         });
     }
 
+    private static ListBuffer<JCTree.JCStatement> processStatment(Element element, String varName, JCTree.JCStatement statement) {
+        ListBuffer<JCTree.JCStatement> statements = new ListBuffer();
+        if (statement instanceof JCTree.JCReturn) {
+            JCTree.JCReturn jcReturn = (JCTree.JCReturn) statement;
+            if (jcReturn.expr == null) {// return;
+                statements.append(createSet(varName, element));
+                statements.append(statement);
+            } else {// return xxx;
+                /**
+                 * create code: return (ReturnType) xxxHandle.set(key, returnValue, expire);
+                 */
+                String key = (String) JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_KEY_NAME);
+                JCTree.JCExpression keyExpr = KeyExpressionUtil.parse(key);
+
+                String prefix = (String) JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_PREFIX_NAME, PropertiesUtil.getCachePrefix());
+                if (StringUtil.isNotEmpty(prefix)) {
+                    JCTree.JCExpression prefixExpr = treeMaker.Literal(prefix);
+                    keyExpr = treeMaker.Binary(JCTree.Tag.PLUS, prefixExpr, keyExpr);
+                }
+
+                Long expire = (Long) JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_EXPIRE_NAME, PropertiesUtil.getCacheExpire());
+                JCTree.JCLiteral expireExpr = treeMaker.Literal(expire);
+
+                JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString(Constants.METHOD_SET));
+                JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(keyExpr, jcReturn.getExpression(), expireExpr));
+                JCTree.JCTypeCast jcTypeCast = treeMaker.TypeCast(JCTreeUtil.getReturnType(element), methodInvocation);
+
+                jcReturn.expr = jcTypeCast;
+                statements.append(jcReturn);
+            }
+        } else if (statement instanceof JCTree.JCIf) {
+            JCTree.JCIf jcIf = (JCTree.JCIf) statement;
+            JCTree.JCBlock block;
+            if (jcIf.thenpart != null) {
+                block = (JCTree.JCBlock) jcIf.thenpart;
+                doBlock(element, varName, block);
+                jcIf.thenpart = block;
+            } else if (jcIf.elsepart != null) {
+                block = (JCTree.JCBlock) jcIf.elsepart;
+                doBlock(element, varName, block);
+                jcIf.elsepart = block;
+            }
+
+            statements.append(jcIf);
+        } else if (statement instanceof JCTree.JCForLoop) {
+            JCTree.JCForLoop forLoop = (JCTree.JCForLoop) statement;
+            JCTree.JCBlock block = (JCTree.JCBlock) forLoop.body;
+            doBlock(element, varName, block);
+            forLoop.body = block;
+
+            statements.append(forLoop);
+        } else if (statement instanceof JCTree.JCDoWhileLoop) {
+            JCTree.JCDoWhileLoop doWhileLoop = (JCTree.JCDoWhileLoop) statement;
+            JCTree.JCBlock block = (JCTree.JCBlock) doWhileLoop.body;
+            doBlock(element, varName, block);
+            doWhileLoop.body = block;
+
+            statements.append(doWhileLoop);
+        } else if (statement instanceof JCTree.JCWhileLoop) {
+            JCTree.JCWhileLoop whileLoop = (JCTree.JCWhileLoop) statement;
+            JCTree.JCBlock block = (JCTree.JCBlock) whileLoop.body;
+            doBlock(element, varName, block);
+            whileLoop.body = block;
+
+            statements.append(whileLoop);
+        } else {
+            statements.append(statement);
+        }
+
+        return statements;
+    }
+
+    private static void doBlock(Element element, String varName, JCTree.JCBlock block) {
+        ListBuffer<JCTree.JCStatement> stats = new ListBuffer();
+        for (JCTree.JCStatement st : block.getStatements()) {
+            ListBuffer<JCTree.JCStatement> ss = processStatment(element, varName, st);
+
+            for (JCTree.JCStatement stat : ss) {
+                stats.append(stat);
+            }
+        }
+
+        block.stats = stats.toList();
+    }
+
+    /**
+     * reate code: xxxHandle.set(key, returnValue, expire);
+     *
+     * @param varName
+     * @param element
+     * @return
+     */
+    private static JCTree.JCStatement createSet(String varName, Element element) {
+        String key = (String) JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_KEY_NAME);
+        JCTree.JCExpression keyExpr = KeyExpressionUtil.parse(key);
+
+        String prefix = (String) JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_PREFIX_NAME, PropertiesUtil.getCachePrefix());
+        if (StringUtil.isNotEmpty(prefix)) {
+            JCTree.JCExpression prefixExpr = treeMaker.Literal(prefix);
+            keyExpr = treeMaker.Binary(JCTree.Tag.PLUS, prefixExpr, keyExpr);
+        }
+
+        Long expire = (Long) JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_EXPIRE_NAME, PropertiesUtil.getCacheExpire());
+        JCTree.JCLiteral expireExpr = treeMaker.Literal(expire);
+
+        JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString(Constants.METHOD_SET));
+        JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(keyExpr, JCTreeUtil.getNull(), expireExpr));
+
+        return treeMaker.Exec(methodInvocation);
+    }
 }
