@@ -88,12 +88,13 @@ public class MonitorProcessor {
                 statements.append(statement);
             } else {// return xxx;
                 /**
-                 * create code: return (ReturnType) MonitorUtil.monitor(serversStr, app, type, handlePackage, packageName, className, methodName, _monitorStartTime, returnValue, args);
+                 * create code: return (ReturnType) MonitorUtil.monitor(serversStr, app, type, description, handlePackage, packageName, className, methodName, _monitorStartTime, returnValue, args);
                  */
                 JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(MonitorUtil.class.getSimpleName())), names.fromString(Constants.METHOD_MONITOR));
                 String serversStr = PropertiesUtil.getMonitorServers();
                 String app = PropertiesUtil.getMonitorApp();
                 String type = (String) JCTreeUtil.getAnnotationParameter(element, Monitor.class, Constants.MONITOR_TYPE_NAME, PropertiesUtil.getMonitorType());
+                String description = (String) JCTreeUtil.getAnnotationParameter(element, Monitor.class, Constants.MONITOR_DESCRIPTION_NAME, StringUtil.EXPTY);
                 String handlePackageName = PropertiesUtil.getMonitorHandle();
                 String packageName = JCTreeUtil.getPackageName(element);
                 String className = packageName.substring(packageName.lastIndexOf(".") + 1);
@@ -103,6 +104,7 @@ public class MonitorProcessor {
                 monitorArgs.append(treeMaker.Literal(serversStr));
                 monitorArgs.append(treeMaker.Literal(app));
                 monitorArgs.append(treeMaker.Literal(type));
+                monitorArgs.append(treeMaker.Literal(description));
                 monitorArgs.append(treeMaker.Literal(handlePackageName));
                 monitorArgs.append(treeMaker.Literal(packageName));
                 monitorArgs.append(treeMaker.Literal(className));
@@ -176,7 +178,7 @@ public class MonitorProcessor {
     }
 
     /**
-     * create code: MonitorUtil.monitor(serversStr, app, type, handlePackage, packageName, className, methodName, _monitorStartTime, null, args);
+     * create code: MonitorUtil.monitor(serversStr, app, type, description, handlePackage, packageName, className, methodName, _monitorStartTime, null, args);
      *
      * @param element
      * @return
@@ -186,6 +188,7 @@ public class MonitorProcessor {
         String serversStr = PropertiesUtil.getMonitorServers();
         String app = PropertiesUtil.getMonitorApp();
         String type = (String) JCTreeUtil.getAnnotationParameter(element, Monitor.class, Constants.MONITOR_TYPE_NAME, PropertiesUtil.getMonitorType());
+        String description = (String) JCTreeUtil.getAnnotationParameter(element, Monitor.class, Constants.MONITOR_DESCRIPTION_NAME, StringUtil.EXPTY);
         String handlePackageName = PropertiesUtil.getMonitorHandle();
         String packageName = JCTreeUtil.getPackageName(element);
         String className = packageName.substring(packageName.lastIndexOf(".") + 1);
@@ -195,6 +198,7 @@ public class MonitorProcessor {
         monitorArgs.append(treeMaker.Literal(serversStr));
         monitorArgs.append(treeMaker.Literal(app));
         monitorArgs.append(treeMaker.Literal(type));
+        monitorArgs.append(treeMaker.Literal(description));
         monitorArgs.append(treeMaker.Literal(handlePackageName));
         monitorArgs.append(treeMaker.Literal(packageName));
         monitorArgs.append(treeMaker.Literal(className));

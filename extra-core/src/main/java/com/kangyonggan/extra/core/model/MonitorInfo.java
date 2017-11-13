@@ -11,6 +11,7 @@ public class MonitorInfo implements Serializable {
 
     private String app;
     private String type;
+    private String description;
     private String packageName;
     private String className;
     private String methodName;
@@ -22,9 +23,10 @@ public class MonitorInfo implements Serializable {
     public MonitorInfo() {
     }
 
-    public MonitorInfo(String app, String type, String packageName, String className, String methodName, Long beginTime, Long endTime, Object returnValue, Object[] args) {
+    public MonitorInfo(String app, String type, String description, String packageName, String className, String methodName, Long beginTime, Long endTime, Object returnValue, Object[] args) {
         this.app = app;
         this.type = type;
+        this.description = description;
         this.packageName = packageName;
         this.className = className;
         this.methodName = methodName;
@@ -48,6 +50,14 @@ public class MonitorInfo implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getPackageName() {
@@ -111,6 +121,7 @@ public class MonitorInfo implements Serializable {
         return "MonitorInfo{" +
                 "app='" + app + '\'' +
                 ", type='" + type + '\'' +
+                ", description='" + description + '\'' +
                 ", packageName='" + packageName + '\'' +
                 ", className='" + className + '\'' +
                 ", methodName='" + methodName + '\'' +

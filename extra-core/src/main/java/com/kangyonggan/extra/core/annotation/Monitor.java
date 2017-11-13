@@ -25,10 +25,10 @@ public @interface Monitor {
     String type() default StringUtil.EXPTY;
 
     /**
-     * application name
+     * description the monitor
      *
      * @return
      */
-    String app() default StringUtil.EXPTY;
+    String description() default StringUtil.EXPTY;
 
 }
