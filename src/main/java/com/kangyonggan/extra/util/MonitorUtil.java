@@ -19,9 +19,9 @@ public class MonitorUtil {
     private static LinkedBlockingDeque<MonitorInfo> queue = new LinkedBlockingDeque();
     private static MonitorHandleInfo monitorHandle;
 
-    public static void monitor(String serversStr, String app, String type, String handlePackage, String packageName,
-                               String className, String methodName, Object... args) {
-        MonitorInfo monitor = new MonitorInfo(app, type, packageName, className, methodName, args);
+    public static Object monitor(String serversStr, String app, String type, String handlePackage, String packageName,
+                                 String className, String methodName, Long startTime, Object returnValue, Object... args) {
+        MonitorInfo monitor = new MonitorInfo(app, type, packageName, className, methodName, startTime, System.currentTimeMillis(), returnValue, args);
         initHandle(handlePackage);
         initServers(serversStr, monitor);
 
@@ -29,6 +29,8 @@ public class MonitorUtil {
         for (Server server : servers) {
             server.unlock();
         }
+
+        return returnValue;
     }
 
     private static void initHandle(String handlePackage) {

@@ -15,20 +15,24 @@ public class MonitorInfo implements Serializable {
     private String packageName;
     private String className;
     private String methodName;
-    private Date date;
+    private Long startTime;
+    private Long endTime;
+    private Object returnValue;
     private Object args[];
 
     public MonitorInfo() {
     }
 
-    public MonitorInfo(String app, String type, String packageName, String className, String methodName, Object[] args) {
+    public MonitorInfo(String app, String type, String packageName, String className, String methodName, Long startTime, Long endTime, Object returnValue, Object[] args) {
         this.app = app;
         this.type = type;
         this.packageName = packageName;
         this.className = className;
         this.methodName = methodName;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.returnValue = returnValue;
         this.args = args;
-        this.date = new Date();
     }
 
     public String getApp() {
@@ -71,12 +75,28 @@ public class MonitorInfo implements Serializable {
         this.methodName = methodName;
     }
 
-    public Date getDate() {
-        return date;
+    public Long getStartTime() {
+        return startTime;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setStartTime(Long startTime) {
+        this.startTime = startTime;
+    }
+
+    public Long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Long endTime) {
+        this.endTime = endTime;
+    }
+
+    public Object getReturnValue() {
+        return returnValue;
+    }
+
+    public void setReturnValue(Object returnValue) {
+        this.returnValue = returnValue;
     }
 
     public Object[] getArgs() {
@@ -95,7 +115,9 @@ public class MonitorInfo implements Serializable {
                 ", packageName='" + packageName + '\'' +
                 ", className='" + className + '\'' +
                 ", methodName='" + methodName + '\'' +
-                ", date='" + date + '\'' +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", returnValue=" + returnValue +
                 ", args=" + Arrays.toString(args) +
                 '}';
     }
