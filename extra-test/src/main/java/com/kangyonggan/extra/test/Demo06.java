@@ -1,21 +1,16 @@
 package com.kangyonggan.extra.test;
 
+import com.kangyonggan.extra.core.annotation.Log;
+
 /**
  * @author kangyonggan
  * @since 2017/11/5 0005
  */
 public class Demo06 {
 
-//    @Log
+    @Log
     public void helloNull(String name) {
-        if (name == null) {
-            for (int i = 0; i < 10; i++) {
-                System.out.println(i);
-            }
-            return ;
-        }
-
-        if (name.length() == 0) {
+        for (int i = 0; i < 3; i++) {
             return;
         }
 

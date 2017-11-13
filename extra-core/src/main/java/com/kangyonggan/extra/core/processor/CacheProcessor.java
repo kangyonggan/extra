@@ -77,7 +77,8 @@ public class CacheProcessor {
                  */
                 JCTree.JCParens condition = treeMaker.Parens(JCTreeUtil.notNull(Constants.VARIABLE_PREFIX + "cacheValue"));
                 JCTree.JCStatement statementTrue = treeMaker.Return(treeMaker.TypeCast(returnType, treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "cacheValue"))));
-                JCTree.JCIf jcIf = treeMaker.If(condition, statementTrue, null);
+                JCTree.JCBlock block = treeMaker.Block(1L, List.of(statementTrue));
+                JCTree.JCIf jcIf = treeMaker.If(condition, block, null);
                 statements.append(jcIf);
 
                 for (int i = 0; i < tree.getStatements().size(); i++) {
