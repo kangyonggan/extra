@@ -2,9 +2,9 @@ package com.kangyonggan.extra.model;
 
 import com.alibaba.fastjson.JSONObject;
 import com.kangyonggan.extra.util.MonitorUtil;
+import com.kangyonggan.extra.util.StringUtil;
 
-import java.io.BufferedWriter;
-import java.io.OutputStreamWriter;
+import java.io.OutputStream;
 import java.net.Socket;
 
 public class Server {
@@ -15,13 +15,15 @@ public class Server {
 
     private Socket socket;
 
-    private BufferedWriter write;
+    private OutputStream out;
 
     private boolean isRuning;
 
     private long lastSendTime;
 
     private Object lock;
+
+    private long heartbeatInterval = 30000;
 
     public Server(String ip, Integer port) {
         this.ip = ip;
@@ -38,13 +40,12 @@ public class Server {
             public void run() {
                 while (true) {
                     try {
-                        Thread.sleep(30000);
+                        Thread.sleep(heartbeatInterval);
                     } catch (Exception e) {
                         MonitorUtil.error("Check Connect Exception When Sleep", e);
                     }
 
                     checkConnect();
-                    System.out.println("check connect");
                 }
             }
         }.start();
@@ -54,11 +55,9 @@ public class Server {
             public void run() {
                 while (true) {
                     MonitorInfo monitor = MonitorUtil.getMonitorInfo();
-                    System.out.println("take a monitor info " + monitor);
                     if (monitor == null) {
                         try {
                             synchronized (lock) {
-                                System.out.println("wait");
                                 lock.wait();
                             }
                         } catch (InterruptedException e) {
@@ -85,12 +84,11 @@ public class Server {
         }
 
         try {
-            write.write(JSONObject.toJSONString(monitorInfo));
+            byte body[] = JSONObject.toJSONString(monitorInfo).getBytes();
+            out.write(StringUtil.leftPad(String.valueOf(body.length), 8, "0").getBytes());
+            out.write(body);
+            out.flush();
 
-            write.flush();
-            socket.shutdownOutput();
-
-            System.out.println("send success");
             lastSendTime = System.currentTimeMillis();
         } catch (Exception e) {
             MonitorUtil.error("Send Monitor Info Exception", e);
@@ -105,14 +103,12 @@ public class Server {
     }
 
     private void checkConnect() {
-        if (System.currentTimeMillis() - lastSendTime < 28000) {
+        if (System.currentTimeMillis() - lastSendTime < heartbeatInterval) {
             return;
         }
         try {
-            write.write("00000000");
-
-            write.flush();
-            socket.shutdownOutput();
+            out.write("00000000".getBytes());
+            out.flush();
 
             lastSendTime = System.currentTimeMillis();
         } catch (Exception e) {
@@ -124,9 +120,8 @@ public class Server {
     public void getConnect() {
         try {
             socket = new Socket(ip, port);
-            write = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            out = socket.getOutputStream();
             isRuning = true;
-            System.out.println("get a connect success");
         } catch (Exception e) {
             MonitorUtil.error("Get Connect Exception", e);
             isRuning = false;
@@ -138,7 +133,6 @@ public class Server {
             synchronized (lock) {
                 lock.notifyAll();
             }
-            System.out.println("unlock success");
         } catch (Exception e) {
             MonitorUtil.error("Unlock Exception", e);
         }
