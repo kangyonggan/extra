@@ -79,7 +79,7 @@ public class Server {
         if (!isRuning) {
             MonitorUtil.error("Send Package Thread Wait Exception", monitorInfo);
             // put back to queue
-            MonitorUtil.putMonitorInfo(monitorInfo);
+//            MonitorUtil.putMonitorInfo(monitorInfo);
             return;
         }
 
@@ -98,7 +98,7 @@ public class Server {
             }
 
             // put back to queue
-            MonitorUtil.putMonitorInfo(monitorInfo);
+//            MonitorUtil.putMonitorInfo(monitorInfo);
         }
     }
 
