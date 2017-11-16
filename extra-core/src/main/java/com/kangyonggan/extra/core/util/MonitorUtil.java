@@ -1,9 +1,6 @@
 package com.kangyonggan.extra.core.util;
 
-import com.kangyonggan.extra.core.model.MonitorHandleInfo;
-import com.kangyonggan.extra.core.model.MonitorHandleInfoFactory;
-import com.kangyonggan.extra.core.model.MonitorInfo;
-import com.kangyonggan.extra.core.model.Server;
+import com.kangyonggan.extra.core.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +18,7 @@ public class MonitorUtil {
 
     public static Object monitor(String serversStr, String app, String type, String description, String handlePackage, String packageName,
                                  String className, String methodName, Long startTime, Object returnValue, Object... args) {
-        MonitorInfo monitor = new MonitorInfo(app, type, description, packageName, className, methodName, startTime, System.currentTimeMillis(), returnValue, args);
+        MonitorInfo monitor = new MonitorInfo(app, type, description, packageName, className, methodName, startTime, System.currentTimeMillis(), getReturnType(returnValue), getArgTypes(args));
         initHandle(handlePackage);
         initServers(serversStr, monitor);
 
@@ -91,8 +88,21 @@ public class MonitorUtil {
         return null;
     }
 
-    public static void putMonitorInfo(MonitorInfo monitor) {
-        queue.addLast(monitor);
+    private static String getReturnType(Object returnValue) {
+        if (returnValue == null) {
+            return Constants.RETURN_VOID;
+        }
+        return returnValue.getClass().getName();
+    }
+
+    private static String[] getArgTypes(Object... args) {
+        String argTypes[] = new String[args.length];
+
+        for (int i = 0; i < args.length; i++) {
+            argTypes[i] = args[i].getClass().getName();
+        }
+
+        return argTypes;
     }
 
 }

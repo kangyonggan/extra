@@ -17,13 +17,13 @@ public class MonitorInfo implements Serializable {
     private String methodName;
     private Long beginTime;
     private Long endTime;
-    private Object returnValue;
-    private Object args[];
+    private String returnType;
+    private String argTypes[];
 
     public MonitorInfo() {
     }
 
-    public MonitorInfo(String app, String type, String description, String packageName, String className, String methodName, Long beginTime, Long endTime, Object returnValue, Object[] args) {
+    public MonitorInfo(String app, String type, String description, String packageName, String className, String methodName, Long beginTime, Long endTime, String returnType, String[] argTypes) {
         this.app = app;
         this.type = type;
         this.description = description;
@@ -32,8 +32,8 @@ public class MonitorInfo implements Serializable {
         this.methodName = methodName;
         this.beginTime = beginTime;
         this.endTime = endTime;
-        this.returnValue = returnValue;
-        this.args = args;
+        this.returnType = returnType;
+        this.argTypes = argTypes;
     }
 
     public String getApp() {
@@ -100,20 +100,20 @@ public class MonitorInfo implements Serializable {
         this.endTime = endTime;
     }
 
-    public Object getReturnValue() {
-        return returnValue;
+    public String getReturnType() {
+        return returnType;
     }
 
-    public void setReturnValue(Object returnValue) {
-        this.returnValue = returnValue;
+    public void setReturnType(String returnType) {
+        this.returnType = returnType;
     }
 
-    public Object[] getArgs() {
-        return args;
+    public String[] getArgTypes() {
+        return argTypes;
     }
 
-    public void setArgs(Object[] args) {
-        this.args = args;
+    public void setArgTypes(String[] argTypes) {
+        this.argTypes = argTypes;
     }
 
     @Override
@@ -127,8 +127,8 @@ public class MonitorInfo implements Serializable {
                 ", methodName='" + methodName + '\'' +
                 ", beginTime=" + beginTime +
                 ", endTime=" + endTime +
-                ", returnValue=" + returnValue +
-                ", args=" + Arrays.toString(args) +
+                ", returnType='" + returnType + '\'' +
+                ", argTypes=" + Arrays.toString(argTypes) +
                 '}';
     }
 }
