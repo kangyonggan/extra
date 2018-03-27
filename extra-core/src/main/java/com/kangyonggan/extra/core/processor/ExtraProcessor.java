@@ -46,13 +46,25 @@ public class ExtraProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment env) {
         // 这些processor的顺序不可变
-        ValidProcess.process(annotations, env);
-        CountProcessor.process(annotations, env);
-        FrequencyProcessor.process(annotations, env);
-        CacheProcessor.process(annotations, env);
-        CacheDelProcessor.process(annotations, env);
-        LogProcessor.process(annotations, env);
-        MonitorProcessor.process(annotations, env);
+        if (PropertiesUtil.isValidOpen()) {
+            ValidProcess.process(annotations, env);
+        }
+        if (PropertiesUtil.isCountOpen()) {
+            CountProcessor.process(annotations, env);
+        }
+        if (PropertiesUtil.isFrequencyOpen()) {
+            FrequencyProcessor.process(annotations, env);
+        }
+        if (PropertiesUtil.isCacheOpen()) {
+            CacheProcessor.process(annotations, env);
+            CacheDelProcessor.process(annotations, env);
+        }
+        if (PropertiesUtil.isLogOpen()) {
+            LogProcessor.process(annotations, env);
+        }
+        if (PropertiesUtil.isMonitorOpen()) {
+            MonitorProcessor.process(annotations, env);
+        }
         return true;
     }
 

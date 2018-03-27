@@ -39,8 +39,20 @@ public class PropertiesUtil {
             props.setProperty(Constants.CACHE_HANDLE, MemoryCacheHandle.class.getName());
         }
 
+        if (String.valueOf(false).equals(props.getProperty(Constants.CACHE_OPEN))) {
+            props.setProperty(Constants.CACHE_OPEN, String.valueOf(Boolean.FALSE));
+        } else {
+            props.setProperty(Constants.CACHE_OPEN, String.valueOf(Boolean.TRUE));
+        }
+
         if (StringUtil.isEmpty(props.getProperty(Constants.LOG_HANDLE))) {
             props.setProperty(Constants.LOG_HANDLE, ConsoleLogHandler.class.getName());
+        }
+
+        if (String.valueOf(false).equals(props.getProperty(Constants.LOG_OPEN))) {
+            props.setProperty(Constants.LOG_OPEN, String.valueOf(Boolean.FALSE));
+        } else {
+            props.setProperty(Constants.LOG_OPEN, String.valueOf(Boolean.TRUE));
         }
 
         if (StringUtil.isEmpty(props.getProperty(Constants.COUNT_PREFIX))) {
@@ -55,6 +67,12 @@ public class PropertiesUtil {
             props.setProperty(Constants.COUNT_HANDLE, MemoryCountHandle.class.getName());
         }
 
+        if (String.valueOf(false).equals(props.getProperty(Constants.COUNT_OPEN))) {
+            props.setProperty(Constants.COUNT_OPEN, String.valueOf(Boolean.FALSE));
+        } else {
+            props.setProperty(Constants.COUNT_OPEN, String.valueOf(Boolean.TRUE));
+        }
+
         if (StringUtil.isEmpty(props.getProperty(Constants.FREQUENCY_PREFIX))) {
             props.setProperty(Constants.FREQUENCY_PREFIX, StringUtil.EXPTY);
         }
@@ -67,12 +85,24 @@ public class PropertiesUtil {
             props.setProperty(Constants.FREQUENCY_HANDLE, MemoryFrequencyHandle.class.getName());
         }
 
+        if (String.valueOf(false).equals(props.getProperty(Constants.FREQUENCY_OPEN))) {
+            props.setProperty(Constants.FREQUENCY_OPEN, String.valueOf(Boolean.FALSE));
+        } else {
+            props.setProperty(Constants.FREQUENCY_OPEN, String.valueOf(Boolean.TRUE));
+        }
+
         if (StringUtil.isEmpty(props.getProperty(Constants.VALID_INTERRUPT))) {
             props.setProperty(Constants.VALID_INTERRUPT, String.valueOf(false));
         }
 
         if (StringUtil.isEmpty(props.getProperty(Constants.VALID_HANDLE))) {
             props.setProperty(Constants.VALID_HANDLE, ConsoleValidHandle.class.getName());
+        }
+
+        if (String.valueOf(false).equals(props.getProperty(Constants.VALID_OPEN))) {
+            props.setProperty(Constants.VALID_OPEN, String.valueOf(Boolean.FALSE));
+        } else {
+            props.setProperty(Constants.VALID_OPEN, String.valueOf(Boolean.TRUE));
         }
 
         if (StringUtil.isEmpty(props.getProperty(Constants.MONITOR_APP))) {
@@ -86,6 +116,13 @@ public class PropertiesUtil {
         if (StringUtil.isEmpty(props.getProperty(Constants.MONITOR_HANDLE))) {
             props.setProperty(Constants.MONITOR_HANDLE, ConsoleMonitorHandle.class.getName());
         }
+
+        if (String.valueOf(false).equals(props.getProperty(Constants.MONITOR_OPEN))) {
+            props.setProperty(Constants.MONITOR_OPEN, String.valueOf(Boolean.FALSE));
+        } else {
+            props.setProperty(Constants.MONITOR_OPEN, String.valueOf(Boolean.TRUE));
+        }
+
     }
 
     public static String getCachePrefix() {
@@ -100,8 +137,16 @@ public class PropertiesUtil {
         return props.getProperty(Constants.CACHE_HANDLE);
     }
 
+    public static boolean isCacheOpen() {
+        return Boolean.parseBoolean(props.getProperty(Constants.CACHE_OPEN));
+    }
+
     public static String getLogHandle() {
         return props.getProperty(Constants.LOG_HANDLE);
+    }
+
+    public static boolean isLogOpen() {
+        return Boolean.parseBoolean(props.getProperty(Constants.LOG_OPEN));
     }
 
     public static String getCountPrefix() {
@@ -116,6 +161,10 @@ public class PropertiesUtil {
         return props.getProperty(Constants.COUNT_HANDLE);
     }
 
+    public static boolean isCountOpen() {
+        return Boolean.parseBoolean(props.getProperty(Constants.COUNT_OPEN));
+    }
+
     public static String getFrequencyPrefix() {
         return props.getProperty(Constants.FREQUENCY_PREFIX);
     }
@@ -128,12 +177,20 @@ public class PropertiesUtil {
         return props.getProperty(Constants.FREQUENCY_HANDLE);
     }
 
+    public static boolean isFrequencyOpen() {
+        return Boolean.parseBoolean(props.getProperty(Constants.FREQUENCY_OPEN));
+    }
+
     public static boolean getValidInterrupt() {
         return Boolean.parseBoolean(props.getProperty(Constants.VALID_INTERRUPT));
     }
 
     public static String getValidHandle() {
         return props.getProperty(Constants.VALID_HANDLE);
+    }
+
+    public static boolean isValidOpen() {
+        return Boolean.parseBoolean(props.getProperty(Constants.VALID_OPEN));
     }
 
     public static String getMonitorApp() {
@@ -152,4 +209,7 @@ public class PropertiesUtil {
         return props.getProperty(Constants.MONITOR_SERVERS);
     }
 
+    public static boolean isMonitorOpen() {
+        return Boolean.parseBoolean(props.getProperty(Constants.MONITOR_OPEN));
+    }
 }

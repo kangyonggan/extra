@@ -28,10 +28,12 @@ public interface Constants {
     String CACHE_EXPIRE_NAME = "expire";
     String CACHE_HANDLE = "cache.handle";
     String CACHE_HANDLE_NAME = "handle";
+    String CACHE_OPEN = "cache.open";
 
     // @Log
     String LOG_HANDLE = "log.handle";
     String LOG_HANDLE_NAME = "handle";
+    String LOG_OPEN = "log.open";
 
     // @Count
     String COUNT_INTERVAL_NAME = "interval";
@@ -43,6 +45,7 @@ public interface Constants {
     String COUNT_INTERRUPT_NAME = "interrupt";
     String COUNT_HANDLE = "count.handle";
     String COUNT_HANDLE_NAME = "handle";
+    String COUNT_OPEN = "count.open";
 
     // @Frequency
     String FREQUENCY_INTERVAL_NAME = "interval";
@@ -53,12 +56,14 @@ public interface Constants {
     String FREQUENCY_KEY_NAME = "key";
     String FREQUENCY_HANDLE_NAME = "handle";
     String FREQUENCY_HANDLE = "frequency.handle";
+    String FREQUENCY_OPEN = "frequency.open";
 
     // @Valid
     String VALID_INTERRUPT = "valid.interrupt";
     String VALID_INTERRUPT_NAME = "interrupt";
     String VALID_HANDLE = "valid.handle";
     String VALID_HANDLE_NAME = "handle";
+    String VALID_OPEN = "valid.open";
 
     // @Monitor
     String MONITOR_APP = "monitor.app";
@@ -67,5 +72,6 @@ public interface Constants {
     String MONITOR_DESCRIPTION_NAME = "description";
     String MONITOR_HANDLE = "monitor.handle";
     String MONITOR_SERVERS = "monitor.servers";
+    String MONITOR_OPEN = "monitor.open";
 
 }
