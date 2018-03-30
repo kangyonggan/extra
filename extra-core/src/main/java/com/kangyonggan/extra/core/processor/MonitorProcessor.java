@@ -57,12 +57,12 @@ public class MonitorProcessor {
                 ListBuffer<JCTree.JCStatement> statements = new ListBuffer();
 
                 /**
-                 * create code: Long _methodStartTime = System.currentTimeMillis();
+                 * create code: Long _monitorMethodStartTime = System.currentTimeMillis();
                  */
                 JCTree.JCExpression typeExpr = treeMaker.Ident(names.fromString("Long"));
                 JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString("System")), names.fromString("currentTimeMillis"));
                 JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.nil());
-                JCTree.JCVariableDecl variableDecl = treeMaker.VarDef(treeMaker.Modifiers(0), names.fromString(Constants.VARIABLE_PREFIX + "methodStartTime"), typeExpr, methodInvocation);
+                JCTree.JCVariableDecl variableDecl = treeMaker.VarDef(treeMaker.Modifiers(0), names.fromString(Constants.VARIABLE_PREFIX + "monitorMethodStartTime"), typeExpr, methodInvocation);
                 statements.append(variableDecl);
 
                 for (int i = 0; i < tree.getStatements().size(); i++) {
@@ -96,7 +96,7 @@ public class MonitorProcessor {
                 statements.append(statement);
             } else {// return xxx;
                 /**
-                 * create code: return (ReturnType) xxxHandle.handle(new Monitor(app, type, description, methodStartTime, methodEndTime, returnObj, args));
+                 * create code: return (ReturnType) xxxHandle.handle(new Monitor(app, type, description, monitorMethodStartTime, monitorMethodEndTime, returnObj, args));
                  */
                 ListBuffer<JCTree.JCExpression> monitorArgs = new ListBuffer();
                 String app = (String) JCTreeUtil.getAnnotationParameter(element, Monitor.class, Constants.MONITOR_APP_NAME, PropertiesUtil.getMonitorApp());
@@ -111,15 +111,15 @@ public class MonitorProcessor {
                 JCTree.JCExpression descriptionExpr = KeyExpressionUtil.parse(description);
                 monitorArgs.append(descriptionExpr);
 
-                JCTree.JCExpression methodStartTimeExor = treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "methodStartTime"));
+                JCTree.JCExpression methodStartTimeExor = treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "monitorMethodStartTime"));
                 monitorArgs.append(methodStartTimeExor);
 
                 typeExpr = treeMaker.Ident(names.fromString("Long"));
                 JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString("System")), names.fromString("currentTimeMillis"));
                 JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.nil());
-                JCTree.JCVariableDecl variableDecl = treeMaker.VarDef(treeMaker.Modifiers(0), names.fromString(Constants.VARIABLE_PREFIX + "methodEndTime"), typeExpr, methodInvocation);
+                JCTree.JCVariableDecl variableDecl = treeMaker.VarDef(treeMaker.Modifiers(0), names.fromString(Constants.VARIABLE_PREFIX + "monitorMethodEndTime"), typeExpr, methodInvocation);
                 statements.append(variableDecl);
-                JCTree.JCExpression methodEndTimeExor = treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "methodEndTime"));
+                JCTree.JCExpression methodEndTimeExor = treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "monitorMethodEndTime"));
                 monitorArgs.append(methodEndTimeExor);
 
                 monitorArgs.append(jcReturn.getExpression());
@@ -217,7 +217,7 @@ public class MonitorProcessor {
     }
 
     /**
-     * create code: xxxHandle.handle(new Monitor(app, type, description, methodStartTime, methodEndTime, returnObj, args);
+     * create code: xxxHandle.handle(new Monitor(app, type, description, monitorMethodStartTime, monitorMethodEndTime, returnObj, args);
      *
      * @param varName
      * @param element
@@ -238,15 +238,15 @@ public class MonitorProcessor {
         JCTree.JCExpression descriptionExpr = KeyExpressionUtil.parse(description);
         monitorArgs.append(descriptionExpr);
 
-        JCTree.JCExpression methodStartTimeExor = treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "methodStartTime"));
+        JCTree.JCExpression methodStartTimeExor = treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "monitorMethodStartTime"));
         monitorArgs.append(methodStartTimeExor);
 
         typeExpr = treeMaker.Ident(names.fromString("Long"));
         JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString("System")), names.fromString("currentTimeMillis"));
         JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.nil());
-        JCTree.JCVariableDecl variableDecl = treeMaker.VarDef(treeMaker.Modifiers(0), names.fromString(Constants.VARIABLE_PREFIX + "methodEndTime"), typeExpr, methodInvocation);
+        JCTree.JCVariableDecl variableDecl = treeMaker.VarDef(treeMaker.Modifiers(0), names.fromString(Constants.VARIABLE_PREFIX + "monitorMethodEndTime"), typeExpr, methodInvocation);
         statements.append(variableDecl);
-        JCTree.JCExpression methodEndTimeExor = treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "methodEndTime"));
+        JCTree.JCExpression methodEndTimeExor = treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "monitorMethodEndTime"));
         monitorArgs.append(methodEndTimeExor);
 
         monitorArgs.append(JCTreeUtil.getNull());
