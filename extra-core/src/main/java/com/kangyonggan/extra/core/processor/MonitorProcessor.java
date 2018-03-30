@@ -76,6 +76,11 @@ public class MonitorProcessor {
                     if (i == tree.getStatements().size() - 1) {
                         if (returnType == null || returnType.toString().equals(Constants.RETURN_VOID)) {
                             if (!(statement instanceof JCTree.JCReturn)) {// return;
+                                typeExpr = treeMaker.Ident(names.fromString("Long"));
+                                fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString("System")), names.fromString("currentTimeMillis"));
+                                methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.nil());
+                                variableDecl = treeMaker.VarDef(treeMaker.Modifiers(0), names.fromString(Constants.VARIABLE_PREFIX + "monitorMethodEndTime"), typeExpr, methodInvocation);
+                                statements.append(variableDecl);
                                 statements.append(createHandle(varName, element));
                             }
                         }
@@ -92,6 +97,11 @@ public class MonitorProcessor {
         if (statement instanceof JCTree.JCReturn) {
             JCTree.JCReturn jcReturn = (JCTree.JCReturn) statement;
             if (jcReturn.expr == null) {// return;
+                JCTree.JCExpression typeExpr = treeMaker.Ident(names.fromString("Long"));
+                JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString("System")), names.fromString("currentTimeMillis"));
+                JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.nil());
+                JCTree.JCVariableDecl variableDecl = treeMaker.VarDef(treeMaker.Modifiers(0), names.fromString(Constants.VARIABLE_PREFIX + "monitorMethodEndTime"), typeExpr, methodInvocation);
+                statements.append(variableDecl);
                 statements.append(createHandle(varName, element));
                 statements.append(statement);
             } else {// return xxx;
@@ -224,7 +234,6 @@ public class MonitorProcessor {
      * @return
      */
     private static JCTree.JCStatement createHandle(String varName, Element element) {
-        ListBuffer<JCTree.JCStatement> statements = new ListBuffer();
         ListBuffer<JCTree.JCExpression> monitorArgs = new ListBuffer();
         String app = (String) JCTreeUtil.getAnnotationParameter(element, Monitor.class, Constants.MONITOR_APP_NAME);
         JCTree.JCExpression appExpr = KeyExpressionUtil.parse(app);
@@ -241,11 +250,6 @@ public class MonitorProcessor {
         JCTree.JCExpression methodStartTimeExor = treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "monitorMethodStartTime"));
         monitorArgs.append(methodStartTimeExor);
 
-        typeExpr = treeMaker.Ident(names.fromString("Long"));
-        JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString("System")), names.fromString("currentTimeMillis"));
-        JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.nil());
-        JCTree.JCVariableDecl variableDecl = treeMaker.VarDef(treeMaker.Modifiers(0), names.fromString(Constants.VARIABLE_PREFIX + "monitorMethodEndTime"), typeExpr, methodInvocation);
-        statements.append(variableDecl);
         JCTree.JCExpression methodEndTimeExor = treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "monitorMethodEndTime"));
         monitorArgs.append(methodEndTimeExor);
 
@@ -256,8 +260,8 @@ public class MonitorProcessor {
             monitorArgs = monitorArgs.append(methodArgs.get(i));
         }
         JCTree.JCNewClass newClass = treeMaker.NewClass(null, null, treeMaker.Ident(names.fromString(MonitorInfo.class.getSimpleName())), monitorArgs.toList(), null);
-        fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString(Constants.METHOD_HANDLE));
-        methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(newClass));
+        JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString(Constants.METHOD_HANDLE));
+        JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(newClass));
         return treeMaker.Exec(methodInvocation);
     }
 

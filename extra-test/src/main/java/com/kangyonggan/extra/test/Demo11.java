@@ -10,14 +10,13 @@ import com.kangyonggan.extra.core.annotation.Monitor;
 public class Demo11 {
 
     @Monitor(app = "app:${user.id}", type = "type:${user.id}", description = "desc:${user.id}")
-    public static User login(User user) {
+    public static void login2(User user) {
         System.out.println(user);
-        return user;
     }
 
     public static void main(String[] args) {
         User user = new User();
         user.setId(1001L);
-        login(user);
+        login2(user);
     }
 }
