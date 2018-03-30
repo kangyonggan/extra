@@ -19,6 +19,8 @@ public class MonitorInfo implements Serializable {
 
     private Long methodEndTime;
 
+    private Boolean hasReturnValue;
+
     private Object returnValue;
 
     private Object[] args;
@@ -27,12 +29,13 @@ public class MonitorInfo implements Serializable {
 
     }
 
-    public MonitorInfo(String app, String type, String description, Long methodStartTime, Long methodEndTime, Object returnValue, Object... args) {
+    public MonitorInfo(String app, String type, String description, Long methodStartTime, Long methodEndTime, Boolean hasReturnValue, Object returnValue, Object... args) {
         this.app = app;
         this.type = type;
         this.description = description;
         this.methodStartTime = methodStartTime;
         this.methodEndTime = methodEndTime;
+        this.hasReturnValue = hasReturnValue;
         this.returnValue = returnValue;
         this.args = args;
     }
@@ -93,6 +96,14 @@ public class MonitorInfo implements Serializable {
         this.args = args;
     }
 
+    public Boolean getHasReturnValue() {
+        return hasReturnValue;
+    }
+
+    public void setHasReturnValue(Boolean hasReturnValue) {
+        this.hasReturnValue = hasReturnValue;
+    }
+
     @Override
     public String toString() {
         return "MonitorInfo{" +
@@ -101,6 +112,7 @@ public class MonitorInfo implements Serializable {
                 ", description='" + description + '\'' +
                 ", methodStartTime=" + methodStartTime +
                 ", methodEndTime=" + methodEndTime +
+                ", hasReturnValue=" + hasReturnValue +
                 ", returnValue=" + returnValue +
                 ", args=" + Arrays.toString(args) +
                 '}';

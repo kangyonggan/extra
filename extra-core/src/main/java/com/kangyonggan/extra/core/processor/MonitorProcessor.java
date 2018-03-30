@@ -7,6 +7,7 @@ import com.kangyonggan.extra.core.util.JCTreeUtil;
 import com.kangyonggan.extra.core.util.KeyExpressionUtil;
 import com.kangyonggan.extra.core.util.PropertiesUtil;
 import com.kangyonggan.extra.core.util.StringUtil;
+import com.sun.tools.javac.code.TypeTag;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.TreeTranslator;
 import com.sun.tools.javac.util.List;
@@ -132,6 +133,8 @@ public class MonitorProcessor {
                 JCTree.JCExpression methodEndTimeExor = treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "monitorMethodEndTime"));
                 monitorArgs.append(methodEndTimeExor);
 
+                JCTree.JCLiteral jcLiteral = treeMaker.Literal(TypeTag.BOOLEAN, 1);
+                monitorArgs.append(jcLiteral);
                 monitorArgs.append(jcReturn.getExpression());
 
                 List<JCTree.JCExpression> methodArgs = JCTreeUtil.getParameters(element);
@@ -252,6 +255,9 @@ public class MonitorProcessor {
 
         JCTree.JCExpression methodEndTimeExor = treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "monitorMethodEndTime"));
         monitorArgs.append(methodEndTimeExor);
+
+        JCTree.JCLiteral jcLiteral = treeMaker.Literal(TypeTag.BOOLEAN, 0);
+        monitorArgs.append(jcLiteral);
 
         monitorArgs.append(JCTreeUtil.getNull());
 
