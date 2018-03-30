@@ -9,7 +9,7 @@ import com.kangyonggan.extra.core.annotation.Monitor;
  */
 public class Demo11 {
 
-    @Monitor(app = "app:${user.id}", type = "type:${user.id}", description = "desc:${user.id}")
+    @Monitor(type = "type:${user.id}", description = "desc:${user.id}")
     public static void login2(User user) {
         System.out.println(user);
     }

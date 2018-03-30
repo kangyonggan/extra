@@ -238,15 +238,15 @@ public class MonitorProcessor {
      */
     private static JCTree.JCStatement createHandle(String varName, Element element) {
         ListBuffer<JCTree.JCExpression> monitorArgs = new ListBuffer();
-        String app = (String) JCTreeUtil.getAnnotationParameter(element, Monitor.class, Constants.MONITOR_APP_NAME);
+        String app = (String) JCTreeUtil.getAnnotationParameter(element, Monitor.class, Constants.MONITOR_APP_NAME, PropertiesUtil.getMonitorApp());
         JCTree.JCExpression appExpr = KeyExpressionUtil.parse(app);
         monitorArgs.append(appExpr);
 
-        String type = (String) JCTreeUtil.getAnnotationParameter(element, Monitor.class, Constants.MONITOR_TYPE_NAME);
+        String type = (String) JCTreeUtil.getAnnotationParameter(element, Monitor.class, Constants.MONITOR_TYPE_NAME, PropertiesUtil.getMonitorType());
         JCTree.JCExpression typeExpr = KeyExpressionUtil.parse(type);
         monitorArgs.append(typeExpr);
 
-        String description = (String) JCTreeUtil.getAnnotationParameter(element, Monitor.class, Constants.MONITOR_DESCRIPTION_NAME);
+        String description = (String) JCTreeUtil.getAnnotationParameter(element, Monitor.class, Constants.MONITOR_DESCRIPTION_NAME, PropertiesUtil.getMonitorDescription());
         JCTree.JCExpression descriptionExpr = KeyExpressionUtil.parse(description);
         monitorArgs.append(descriptionExpr);
 
