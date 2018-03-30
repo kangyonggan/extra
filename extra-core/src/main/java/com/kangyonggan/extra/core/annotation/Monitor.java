@@ -1,5 +1,6 @@
 package com.kangyonggan.extra.core.annotation;
 
+import com.kangyonggan.extra.core.handle.MonitorHandle;
 import com.kangyonggan.extra.core.util.StringUtil;
 
 import java.lang.annotation.ElementType;
@@ -18,6 +19,13 @@ import java.lang.annotation.Target;
 public @interface Monitor {
 
     /**
+     * monitor app
+     *
+     * @return
+     */
+    String app() default StringUtil.EXPTY;
+
+    /**
      * monitor type
      *
      * @return
@@ -30,5 +38,12 @@ public @interface Monitor {
      * @return
      */
     String description() default StringUtil.EXPTY;
+
+    /**
+     * monitor handle, default is console monitor
+     *
+     * @return
+     */
+    Class<? extends MonitorHandle> handle() default MonitorHandle.class;
 
 }

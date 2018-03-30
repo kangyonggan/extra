@@ -113,6 +113,10 @@ public class PropertiesUtil {
             props.setProperty(Constants.MONITOR_TYPE, StringUtil.EXPTY);
         }
 
+        if (StringUtil.isEmpty(props.getProperty(Constants.MONITOR_DESCRIPTION))) {
+            props.setProperty(Constants.MONITOR_DESCRIPTION, StringUtil.EXPTY);
+        }
+
         if (StringUtil.isEmpty(props.getProperty(Constants.MONITOR_HANDLE))) {
             props.setProperty(Constants.MONITOR_HANDLE, ConsoleMonitorHandle.class.getName());
         }
@@ -201,12 +205,12 @@ public class PropertiesUtil {
         return props.getProperty(Constants.MONITOR_TYPE);
     }
 
-    public static String getMonitorHandle() {
-        return props.getProperty(Constants.MONITOR_HANDLE);
+    public static String getMonitorDescription() {
+        return props.getProperty(Constants.MONITOR_DESCRIPTION);
     }
 
-    public static String getMonitorServers() {
-        return props.getProperty(Constants.MONITOR_SERVERS);
+    public static String getMonitorHandle() {
+        return props.getProperty(Constants.MONITOR_HANDLE);
     }
 
     public static boolean isMonitorOpen() {
