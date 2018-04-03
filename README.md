@@ -6,7 +6,7 @@
 <dependency>
     <groupId>com.kangyonggan</groupId>
     <artifactId>extra-core</artifactId>
-    <version>2.0.3</version>
+    <version>3.0.0</version>
 </dependency>
 ```
 
