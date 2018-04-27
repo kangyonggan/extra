@@ -127,6 +127,20 @@ public class PropertiesUtil {
             props.setProperty(Constants.MONITOR_OPEN, String.valueOf(Boolean.TRUE));
         }
 
+        if (String.valueOf(false).equals(props.getProperty(Constants.ENUM_OPEN))) {
+            props.setProperty(Constants.ENUM_OPEN, String.valueOf(Boolean.FALSE));
+        } else {
+            props.setProperty(Constants.ENUM_OPEN, String.valueOf(Boolean.TRUE));
+        }
+
+        if (StringUtil.isEmpty(props.getProperty(Constants.ENUM_CODE))) {
+            props.setProperty(Constants.ENUM_CODE, Constants.ENUM_CODE);
+        }
+
+        if (StringUtil.isEmpty(props.getProperty(Constants.ENUM_NAME))) {
+            props.setProperty(Constants.ENUM_NAME, Constants.ENUM_NAME);
+        }
+
     }
 
     public static String getCachePrefix() {
@@ -216,4 +230,18 @@ public class PropertiesUtil {
     public static boolean isMonitorOpen() {
         return Boolean.parseBoolean(props.getProperty(Constants.MONITOR_OPEN));
     }
+
+    public static boolean isEnumOpen() {
+        return Boolean.parseBoolean(props.getProperty(Constants.ENUM_OPEN));
+    }
+
+    public static String getEnumCode() {
+        return props.getProperty(Constants.ENUM_CODE);
+    }
+
+    public static String getEnumName() {
+        return props.getProperty(Constants.ENUM_NAME);
+    }
+
+
 }

@@ -23,7 +23,8 @@ import java.util.Set;
         "com.kangyonggan.extra.core.annotation.Cache",
         "com.kangyonggan.extra.core.annotation.CacheDel",
         "com.kangyonggan.extra.core.annotation.Log",
-        "com.kangyonggan.extra.core.annotation.Monitor"
+        "com.kangyonggan.extra.core.annotation.Monitor",
+        "com.kangyonggan.extra.core.annotation.Enum"
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class ExtraProcessor extends AbstractProcessor {
@@ -64,6 +65,9 @@ public class ExtraProcessor extends AbstractProcessor {
         }
         if (PropertiesUtil.isMonitorOpen()) {
             MonitorProcessor.process(annotations, env);
+        }
+        if (PropertiesUtil.isEnumOpen()) {
+            EnumProcessor.process(annotations, env);
         }
         return true;
     }

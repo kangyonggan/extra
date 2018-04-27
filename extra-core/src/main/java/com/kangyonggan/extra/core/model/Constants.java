@@ -76,4 +76,11 @@ public interface Constants {
     String MONITOR_HANDLE_NAME = "handle";
     String MONITOR_OPEN = "monitor.open";
 
+    // @Enum
+    String ENUM_KEY_NAME = "key";
+    String ENUM_CODE_NAME = "code";
+    String ENUM_CODE = "code";
+    String ENUM_NAME_NAME = "name";
+    String ENUM_NAME = "name";
+    String ENUM_OPEN = "enum.open";
 }

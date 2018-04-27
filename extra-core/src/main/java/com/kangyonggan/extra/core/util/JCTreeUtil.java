@@ -145,6 +145,30 @@ public class JCTreeUtil {
     }
 
     /**
+     * import a package
+     *
+     * @param element
+     * @param packageName
+     */
+    public static void importPackage4Enum(Element element, String packageName) {
+        JCTree.JCCompilationUnit compilationUnit = (JCTree.JCCompilationUnit) trees.getPath(element).getCompilationUnit();
+        String className = packageName.substring(packageName.lastIndexOf(".") + 1);
+        packageName = packageName.substring(0, packageName.lastIndexOf("."));
+
+        JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(packageName)), names.fromString(className));
+        JCTree.JCImport jcImport = treeMaker.Import(fieldAccess, false);
+
+        ListBuffer<JCTree> imports = new ListBuffer();
+        imports.append(jcImport);
+
+        for (int i = 0; i < compilationUnit.defs.size(); i++) {
+            imports.append(compilationUnit.defs.get(i));
+        }
+
+        compilationUnit.defs = imports.toList();
+    }
+
+    /**
      * define a variable, e.g. private User _user = new User(1001, "zhangsan");
      *
      * @param element
