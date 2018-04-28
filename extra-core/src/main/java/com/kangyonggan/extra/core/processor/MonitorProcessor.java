@@ -1,5 +1,6 @@
 package com.kangyonggan.extra.core.processor;
 
+import com.kangyonggan.extra.core.annotation.Handle;
 import com.kangyonggan.extra.core.annotation.Monitor;
 import com.kangyonggan.extra.core.model.Constants;
 import com.kangyonggan.extra.core.model.MonitorInfo;
@@ -28,9 +29,22 @@ import static com.kangyonggan.extra.core.util.JCTreeUtil.*;
 public class MonitorProcessor {
 
     public static void process(Set<? extends TypeElement> annotations, RoundEnvironment env) {
+        Element handleElement = null;
+        for (Element element : env.getElementsAnnotatedWith(Handle.class)) {
+            if (element.getKind() == ElementKind.CLASS) {
+                String type = JCTreeUtil.getAnnotationParameter(element, Handle.class, "type").toString();
+                if (type.equals(Handle.Type.MONITOR.name())) {
+                    handleElement = element;
+                    break;
+                }
+            }
+        }
         for (Element element : env.getElementsAnnotatedWith(Monitor.class)) {
             if (element.getKind() == ElementKind.METHOD) {
                 String handlePackageName = (String) JCTreeUtil.getAnnotationParameter(element, Monitor.class, Constants.MONITOR_HANDLE_NAME, PropertiesUtil.getMonitorHandle());
+                if (handleElement != null) {
+                    handlePackageName = handleElement.toString();
+                }
                 JCTreeUtil.importPackage(element, handlePackageName);
                 String monitorInfoPkg = MonitorInfo.class.getName();
                 JCTreeUtil.importPackage(element, monitorInfoPkg);

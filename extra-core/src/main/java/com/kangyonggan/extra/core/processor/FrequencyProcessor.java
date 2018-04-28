@@ -1,6 +1,7 @@
 package com.kangyonggan.extra.core.processor;
 
 import com.kangyonggan.extra.core.annotation.Frequency;
+import com.kangyonggan.extra.core.annotation.Handle;
 import com.kangyonggan.extra.core.exception.MethodCalledFrequencyException;
 import com.kangyonggan.extra.core.model.Constants;
 import com.kangyonggan.extra.core.util.JCTreeUtil;
@@ -28,9 +29,22 @@ import static com.kangyonggan.extra.core.util.JCTreeUtil.treeMaker;
 public class FrequencyProcessor {
 
     public static void process(Set<? extends TypeElement> annotations, RoundEnvironment env) {
+        Element handleElement = null;
+        for (Element element : env.getElementsAnnotatedWith(Handle.class)) {
+            if (element.getKind() == ElementKind.CLASS) {
+                String type = JCTreeUtil.getAnnotationParameter(element, Handle.class, "type").toString();
+                if (type.equals(Handle.Type.FREQUENCY.name())) {
+                    handleElement = element;
+                    break;
+                }
+            }
+        }
         for (Element element : env.getElementsAnnotatedWith(Frequency.class)) {
             if (element.getKind() == ElementKind.METHOD) {
                 String handlePackageName = (String) JCTreeUtil.getAnnotationParameter(element, Frequency.class, Constants.FREQUENCY_HANDLE_NAME, PropertiesUtil.getFrequencyHandle());
+                if (handleElement != null) {
+                    handlePackageName = handleElement.toString();
+                }
                 JCTreeUtil.importPackage(element, handlePackageName);
                 JCTreeUtil.importPackage(element, MethodCalledFrequencyException.class.getName());
 

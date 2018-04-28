@@ -1,6 +1,7 @@
 package com.kangyonggan.extra.core.processor;
 
 import com.kangyonggan.extra.core.annotation.Cache;
+import com.kangyonggan.extra.core.annotation.Handle;
 import com.kangyonggan.extra.core.model.Constants;
 import com.kangyonggan.extra.core.util.JCTreeUtil;
 import com.kangyonggan.extra.core.util.KeyExpressionUtil;
@@ -26,6 +27,16 @@ import static com.kangyonggan.extra.core.util.JCTreeUtil.*;
 public class CacheProcessor {
 
     public static void process(Set<? extends TypeElement> annotations, RoundEnvironment env) {
+        Element handleElement = null;
+        for (Element element : env.getElementsAnnotatedWith(Handle.class)) {
+            if (element.getKind() == ElementKind.CLASS) {
+                String type = JCTreeUtil.getAnnotationParameter(element, Handle.class, "type").toString();
+                if (type.equals(Handle.Type.CACHE.name())) {
+                    handleElement = element;
+                    break;
+                }
+            }
+        }
         for (Element element : env.getElementsAnnotatedWith(Cache.class)) {
             if (element.getKind() == ElementKind.METHOD) {
                 JCTree.JCExpression returnType = JCTreeUtil.getReturnType(element);
@@ -34,6 +45,9 @@ public class CacheProcessor {
                 }
 
                 String handlePackageName = (String) JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_HANDLE_NAME, PropertiesUtil.getCacheHandle());
+                if (handleElement != null) {
+                    handlePackageName = handleElement.toString();
+                }
                 JCTreeUtil.importPackage(element, handlePackageName);
 
                 String className = handlePackageName.substring(handlePackageName.lastIndexOf(".") + 1);

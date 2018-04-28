@@ -1,6 +1,7 @@
 package com.kangyonggan.extra.core.processor;
 
 import com.kangyonggan.extra.core.annotation.Count;
+import com.kangyonggan.extra.core.annotation.Handle;
 import com.kangyonggan.extra.core.exception.MethodCalledOutOfCountException;
 import com.kangyonggan.extra.core.model.Constants;
 import com.kangyonggan.extra.core.util.JCTreeUtil;
@@ -27,9 +28,22 @@ import static com.kangyonggan.extra.core.util.JCTreeUtil.*;
 public class CountProcessor {
 
     public static void process(Set<? extends TypeElement> annotations, RoundEnvironment env) {
+        Element handleElement = null;
+        for (Element element : env.getElementsAnnotatedWith(Handle.class)) {
+            if (element.getKind() == ElementKind.CLASS) {
+                String type = JCTreeUtil.getAnnotationParameter(element, Handle.class, "type").toString();
+                if (type.equals(Handle.Type.COUNT.name())) {
+                    handleElement = element;
+                    break;
+                }
+            }
+        }
         for (Element element : env.getElementsAnnotatedWith(Count.class)) {
             if (element.getKind() == ElementKind.METHOD) {
                 String handlePackageName = (String) JCTreeUtil.getAnnotationParameter(element, Count.class, Constants.COUNT_HANDLE_NAME, PropertiesUtil.getCountHandle());
+                if (handleElement != null) {
+                    handlePackageName = handleElement.toString();
+                }
                 JCTreeUtil.importPackage(element, handlePackageName);
                 JCTreeUtil.importPackage(element, MethodCalledOutOfCountException.class.getName());
 

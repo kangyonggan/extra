@@ -1,12 +1,14 @@
 package com.kangyonggan.extra.test;
 
 
+import com.kangyonggan.extra.core.annotation.Handle;
 import com.kangyonggan.extra.core.handle.LogHandle;
 
 /**
  * @author kangyonggan
  * @since 2017/11/4 0004
  */
+@Handle(type = Handle.Type.LOG)
 public class Log4j2LogHandle implements LogHandle {
 
     private String packageName;

@@ -1,5 +1,6 @@
 package com.kangyonggan.extra.core.processor;
 
+import com.kangyonggan.extra.core.annotation.Handle;
 import com.kangyonggan.extra.core.annotation.Log;
 import com.kangyonggan.extra.core.model.Constants;
 import com.kangyonggan.extra.core.util.JCTreeUtil;
@@ -25,9 +26,22 @@ import static com.kangyonggan.extra.core.util.JCTreeUtil.*;
 public class LogProcessor {
 
     public static void process(Set<? extends TypeElement> annotations, RoundEnvironment env) {
+        Element handleElement = null;
+        for (Element element : env.getElementsAnnotatedWith(Handle.class)) {
+            if (element.getKind() == ElementKind.CLASS) {
+                String type = JCTreeUtil.getAnnotationParameter(element, Handle.class, "type").toString();
+                if (type.equals(Handle.Type.LOG.name())) {
+                    handleElement = element;
+                    break;
+                }
+            }
+        }
         for (Element element : env.getElementsAnnotatedWith(Log.class)) {
             if (element.getKind() == ElementKind.METHOD) {
                 String handlePackageName = (String) JCTreeUtil.getAnnotationParameter(element, Log.class, Constants.LOG_HANDLE_NAME, PropertiesUtil.getLogHandle());
+                if (handleElement != null) {
+                    handlePackageName = handleElement.toString();
+                }
                 JCTreeUtil.importPackage(element, handlePackageName);
 
                 String className = handlePackageName.substring(handlePackageName.lastIndexOf(".") + 1);

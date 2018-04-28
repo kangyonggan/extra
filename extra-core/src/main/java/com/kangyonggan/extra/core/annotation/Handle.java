@@ -23,7 +23,12 @@ public @interface Handle {
     Type type();
 
     enum Type {
-        ENUM
+        ENUM,
+        LOG,
+        CACHE,
+        MONITOR,
+        COUNT,
+        FREQUENCY
     }
 
 }
