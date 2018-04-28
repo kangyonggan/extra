@@ -22,28 +22,28 @@ public @interface Cache {
     /**
      * cache key
      *
-     * @return
+     * @return none
      */
     String key();
 
     /**
      * cache prefix
      *
-     * @return
+     * @return none
      */
     String prefix() default StringUtil.EXPTY;
 
     /**
      * expire time，unit is milliseconds， default is 10 years
      *
-     * @return
+     * @return none
      */
     long expire() default 315360000000L;
 
     /**
      * cache handle, default is memory cache
      *
-     * @return
+     * @return none
      */
     Class<? extends CacheHandle> handle() default MemoryCacheHandle.class;
 

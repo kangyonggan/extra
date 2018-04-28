@@ -18,7 +18,7 @@ public @interface Handle {
     /**
      * type of handle
      *
-     * @return
+     * @return none
      */
     Type type();
 

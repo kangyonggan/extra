@@ -58,11 +58,6 @@ public class CacheProcessor {
         }
     }
 
-    /**
-     * @param element
-     * @param className
-     * @param returnType
-     */
     private static void generateBlockCode(Element element, String className, JCTree.JCExpression returnType) {
         String varName = Constants.VARIABLE_PREFIX + StringUtil.firstToLowerCase(className);
         JCTree tree = (JCTree) trees.getTree(element);
@@ -227,13 +222,6 @@ public class CacheProcessor {
         block.stats = stats.toList();
     }
 
-    /**
-     * reate code: xxxHandle.set(key, returnValue, expire);
-     *
-     * @param varName
-     * @param element
-     * @return
-     */
     private static JCTree.JCStatement createSet(String varName, Element element) {
         String key = (String) JCTreeUtil.getAnnotationParameter(element, Cache.class, Constants.CACHE_KEY_NAME);
         JCTree.JCExpression keyExpr = KeyExpressionUtil.parse(key);

@@ -22,42 +22,42 @@ public @interface Count {
     /**
      * key prefix
      *
-     * @return
+     * @return none
      */
     String prefix() default StringUtil.EXPTY;
 
     /**
      * key
      *
-     * @return
+     * @return none
      */
     String key() default StringUtil.EXPTY;
 
     /**
      * method called interval, unit is ms
      *
-     * @return
+     * @return none
      */
     long interval();
 
     /**
      * method called count druing the interval time
      *
-     * @return
+     * @return none
      */
     int count();
 
     /**
      * when over count, is interrupt
      *
-     * @return
+     * @return none
      */
     boolean interrupt() default false;
 
     /**
      * count handle, default is memory count handle
      *
-     * @return
+     * @return none
      */
     Class<? extends CountHandle> handle() default MemoryCountHandle.class;
 

@@ -34,12 +34,6 @@ public class JCTreeUtil {
         names = Names.instance(context).table;
     }
 
-    /**
-     * get return type from method element
-     *
-     * @param element
-     * @return
-     */
     public static JCTree.JCExpression getReturnType(Element element) {
         final JCTree.JCExpression[] returnType = new JCTree.JCExpression[1];
 
@@ -57,23 +51,10 @@ public class JCTreeUtil {
         return returnType[0];
     }
 
-    /**
-     * @param element
-     * @param annoClass
-     * @param name
-     * @return
-     */
     public static Object getAnnotationParameter(Element element, Class annoClass, String name) {
         return getAnnotationParameter(element, annoClass, name, StringUtil.EXPTY);
     }
 
-    /**
-     * @param element
-     * @param annoClass
-     * @param name
-     * @param defaultValue
-     * @return
-     */
     public static Object getAnnotationParameter(Element element, Class annoClass, String name, Object defaultValue) {
         AnnotationMirror annotationMirror = JCTreeUtil.getAnnotationMirror(element, annoClass.getName());
         if (annotationMirror == null) {
@@ -103,13 +84,6 @@ public class JCTreeUtil {
         return defaultValue;
     }
 
-    /**
-     * get annotation mirror
-     *
-     * @param element
-     * @param name
-     * @return
-     */
     public static AnnotationMirror getAnnotationMirror(Element element, String name) {
         for (AnnotationMirror annotationMirror : element.getAnnotationMirrors()) {
             if (name.equals(annotationMirror.getAnnotationType().toString())) {
@@ -120,12 +94,6 @@ public class JCTreeUtil {
         return null;
     }
 
-    /**
-     * import a package
-     *
-     * @param element
-     * @param packageName
-     */
     public static void importPackage(Element element, String packageName) {
         JCTree.JCCompilationUnit compilationUnit = (JCTree.JCCompilationUnit) trees.getPath(element.getEnclosingElement()).getCompilationUnit();
         String className = packageName.substring(packageName.lastIndexOf(".") + 1);
@@ -144,12 +112,6 @@ public class JCTreeUtil {
         compilationUnit.defs = imports.toList();
     }
 
-    /**
-     * import a package
-     *
-     * @param element
-     * @param packageName
-     */
     public static void importPackage4Enum(Element element, String packageName) {
         JCTree.JCCompilationUnit compilationUnit = (JCTree.JCCompilationUnit) trees.getPath(element).getCompilationUnit();
         String className = packageName.substring(packageName.lastIndexOf(".") + 1);
@@ -168,13 +130,6 @@ public class JCTreeUtil {
         compilationUnit.defs = imports.toList();
     }
 
-    /**
-     * define a variable, e.g. private User _user = new User(1001, "zhangsan");
-     *
-     * @param element
-     * @param className
-     * @param args
-     */
     public static void defineVariable(Element element, String className, List<JCTree.JCExpression> args) {
         JCTree tree = (JCTree) trees.getTree(element.getEnclosingElement());
         tree.accept(new TreeTranslator() {
@@ -210,14 +165,6 @@ public class JCTreeUtil {
         });
     }
 
-    /**
-     * adjust class already has variable
-     *
-     * @param oldList
-     * @param className
-     * @param varName
-     * @return
-     */
     public static boolean hasVariable(List<JCTree> oldList, String className, String varName) {
         boolean hasField = false;
 
@@ -235,18 +182,10 @@ public class JCTreeUtil {
         return hasField;
     }
 
-    /**
-     * get a null value variable
-     *
-     * @return
-     */
     public static JCTree.JCLiteral getNull() {
         return treeMaker.Literal(TypeTag.BOT, null);
     }
 
-    /**
-     * create code like：Object _cacheValue = _memoryCacheHandle.set(key, _returnValue, expire, unit);
-     */
     public static JCTree.JCVariableDecl callMethodWithReturn(String varType, String varName, String targetVarName, String methodName, List args) {
         JCTree.JCIdent varIdent = treeMaker.Ident(names.fromString(varName));
         JCTree.JCExpression typeExpr = treeMaker.Ident(names.fromString(varType));
@@ -256,25 +195,16 @@ public class JCTreeUtil {
         return treeMaker.VarDef(treeMaker.Modifiers(0), names.fromString(targetVarName), typeExpr, methodInvocation);
     }
 
-    /**
-     * var != null
-     *
-     * @return
-     */
     public static JCTree.JCExpression notNull(String varName) {
         return treeMaker.Binary(JCTree.Tag.NE, treeMaker.Ident(names.fromString(varName)), treeMaker.Literal(TypeTag.BOT, null));
     }
 
-    /**
-     * get the method's parameters
-     *
-     * @param element
-     */
     public static List<JCTree.JCExpression> getParameters(Element element) {
         final List<JCTree.JCExpression>[] params = new List[]{List.nil()};
         JCTree tree = (JCTree) trees.getTree(element);
 
         tree.accept(new TreeTranslator() {
+            @Override
             public void visitMethodDef(JCTree.JCMethodDecl jcMethodDecl) {
                 for (JCTree.JCVariableDecl decl : jcMethodDecl.getParameters()) {
                     params[0] = params[0].append(treeMaker.Ident(decl));
@@ -286,16 +216,12 @@ public class JCTreeUtil {
         return params[0];
     }
 
-    /**
-     * get the method's name
-     *
-     * @param element
-     */
     public static JCTree.JCLiteral getMethodName(Element element) {
         final JCTree.JCLiteral[] methodName = {null};
         JCTree tree = (JCTree) trees.getTree(element);
 
         tree.accept(new TreeTranslator() {
+            @Override
             public void visitMethodDef(JCTree.JCMethodDecl jcMethodDecl) {
                 if (methodName[0] == null) {
                     methodName[0] = treeMaker.Literal(jcMethodDecl.getName().toString());
@@ -307,18 +233,10 @@ public class JCTreeUtil {
         return methodName[0];
     }
 
-    /**
-     * @param element
-     * @return
-     */
     public static String getPackageName(Element element) {
         return ((JCTree.JCClassDecl) trees.getTree(element.getEnclosingElement())).sym.toString();
     }
 
-    /**
-     * @param type
-     * @return
-     */
     public static JCTree.JCExpression getTypeDefaultValue(JCTree.JCExpression type) {
         String tp = type.toString();
         if (tp.equals("byte")) {

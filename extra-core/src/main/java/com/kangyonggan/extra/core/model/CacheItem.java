@@ -67,9 +67,6 @@ public class CacheItem {
                 '}';
     }
 
-    /**
-     * @return
-     */
     public boolean isExpire() {
         if (expire == -1) {
             return false;

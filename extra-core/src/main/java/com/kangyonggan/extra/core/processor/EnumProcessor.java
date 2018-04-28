@@ -46,10 +46,6 @@ public class EnumProcessor {
         }
     }
 
-    /**
-     * @param element
-     * @param handleElement
-     */
     private static void generateBlockCode(Element element, Element handleElement) {
         JCTree tree = (JCTree) trees.getTree(handleElement);
 
@@ -100,13 +96,6 @@ public class EnumProcessor {
         });
     }
 
-    /**
-     * generate code statment
-     *
-     * @param element
-     * @param handleName
-     * @return
-     */
     private static JCTree.JCExpressionStatement generateCode(Element element, String handleName) {
         String key = (String) JCTreeUtil.getAnnotationParameter(element, Enum.class, Constants.ENUM_KEY_NAME);
         String code = (String) JCTreeUtil.getAnnotationParameter(element, Enum.class, Constants.ENUM_CODE_NAME, PropertiesUtil.getEnumCode());

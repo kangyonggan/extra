@@ -36,14 +36,14 @@ public @interface Valid {
     /**
      * when valid failure, is interrupt
      *
-     * @return
+     * @return none
      */
     boolean interrupt() default false;
 
     /**
      * valid handle, default is console valid handle
      *
-     * @return
+     * @return none
      */
     Class<? extends ValidHandle> handle() default ConsoleValidHandle.class;
 

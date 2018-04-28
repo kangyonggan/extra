@@ -22,35 +22,35 @@ public @interface Frequency {
     /**
      * key prefix
      *
-     * @return
+     * @return none
      */
     String prefix() default StringUtil.EXPTY;
 
     /**
      * key
      *
-     * @return
+     * @return none
      */
     String key() default StringUtil.EXPTY;
 
     /**
      * method called interval, unit is ms
      *
-     * @return
+     * @return none
      */
     long interval();
 
     /**
      * when over frequency, is interrupt
      *
-     * @return
+     * @return none
      */
     boolean interrupt() default false;
 
     /**
      * limit frequency handle, default is memory limit frequency handle
      *
-     * @return
+     * @return none
      */
     Class<? extends FrequencyHandle> handle() default MemoryFrequencyHandle.class;
 

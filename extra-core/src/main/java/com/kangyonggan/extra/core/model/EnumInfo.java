@@ -5,10 +5,6 @@ import com.kangyonggan.extra.core.util.StringUtil;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 
-/**
- * @author kangyonggan
- * @date 2018/4/27 0027
- */
 public class EnumInfo implements Serializable {
 
     private String key;

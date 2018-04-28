@@ -4,10 +4,6 @@ import com.kangyonggan.extra.core.annotation.Handle;
 import com.kangyonggan.extra.core.handle.EnumHandle;
 import com.kangyonggan.extra.core.model.EnumInfo;
 
-/**
- * @author kangyonggan
- * @date 4/28/18
- */
 @Handle(type = Handle.Type.ENUM)
 public class MyEnumHandle extends EnumHandle {
 

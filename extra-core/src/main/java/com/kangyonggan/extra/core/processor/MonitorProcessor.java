@@ -57,11 +57,6 @@ public class MonitorProcessor {
         }
     }
 
-    /**
-     * @param element
-     * @param className
-     * @param returnType
-     */
     private static void generateBlockCode(Element element, String className, JCTree.JCExpression returnType) {
         String varName = Constants.VARIABLE_PREFIX + StringUtil.firstToLowerCase(className);
         JCTree tree = (JCTree) trees.getTree(element);
@@ -243,13 +238,6 @@ public class MonitorProcessor {
         block.stats = stats.toList();
     }
 
-    /**
-     * create code: xxxHandle.handle(new Monitor(app, type, description, monitorMethodStartTime, monitorMethodEndTime, returnObj, args);
-     *
-     * @param varName
-     * @param element
-     * @return
-     */
     private static JCTree.JCStatement createHandle(String varName, Element element) {
         ListBuffer<JCTree.JCExpression> monitorArgs = new ListBuffer();
         String app = (String) JCTreeUtil.getAnnotationParameter(element, Monitor.class, Constants.MONITOR_APP_NAME, PropertiesUtil.getMonitorApp());

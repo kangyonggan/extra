@@ -21,14 +21,14 @@ public @interface CacheDel {
     /**
      * cache key
      *
-     * @return
+     * @return none
      */
     String[] key();
 
     /**
      * cache channel, default is memory cache
      *
-     * @return
+     * @return none
      */
     Class<? extends CacheHandle> handle() default MemoryCacheHandle.class;
 

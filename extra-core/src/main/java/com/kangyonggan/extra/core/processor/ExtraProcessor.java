@@ -29,9 +29,6 @@ import java.util.Set;
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class ExtraProcessor extends AbstractProcessor {
 
-    /**
-     * @param env
-     */
     @Override
     public synchronized void init(ProcessingEnvironment env) {
         PropertiesUtil.init(Constants.PROPERTIES_NAME);
@@ -39,11 +36,6 @@ public class ExtraProcessor extends AbstractProcessor {
         KeyExpressionUtil.init(env);
     }
 
-    /**
-     * @param annotations
-     * @param env
-     * @return
-     */
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment env) {
         // 这些processor的顺序不可变

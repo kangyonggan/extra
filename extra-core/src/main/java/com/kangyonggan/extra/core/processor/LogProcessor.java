@@ -52,10 +52,6 @@ public class LogProcessor {
         }
     }
 
-    /**
-     * @param element
-     * @param className
-     */
     private static void generateBlockCode(Element element, String className) {
         String varName = Constants.VARIABLE_PREFIX + StringUtil.firstToLowerCase(className);
         JCTree tree = (JCTree) trees.getTree(element);
@@ -210,13 +206,6 @@ public class LogProcessor {
         block.stats = stats.toList();
     }
 
-    /**
-     * create code: xxxHandle.logAfter(methodName, returnValue);
-     *
-     * @param varName
-     * @param element
-     * @return
-     */
     private static JCTree.JCStatement createLogAfter(String varName, Element element) {
         JCTree.JCFieldAccess fieldAccess = treeMaker.Select(treeMaker.Ident(names.fromString(varName)), names.fromString("logAfter"));
         JCTree.JCMethodInvocation methodInvocation = treeMaker.Apply(List.nil(), fieldAccess, List.of(JCTreeUtil.getMethodName(element), treeMaker.Ident(names.fromString(Constants.VARIABLE_PREFIX + "methodStartTime")), JCTreeUtil.getNull()));

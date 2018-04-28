@@ -5,7 +5,6 @@ import com.kangyonggan.extra.core.annotation.Enum;
 
 /**
  * @author kangyonggan
- * @date 4/23/18
  */
 @Enum(code = "type")
 public enum PreferenceType {

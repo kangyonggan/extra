@@ -19,7 +19,7 @@ public @interface Log {
     /**
      * log handle, default is console log handle
      *
-     * @return
+     * @return none
      */
     Class<? extends LogHandle> handle() default ConsoleLogHandler.class;
 

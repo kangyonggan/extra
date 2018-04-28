@@ -53,10 +53,6 @@ public class CacheDelProcessor {
         }
     }
 
-    /**
-     * @param element
-     * @param className
-     */
     private static void generateBlockCode(Element element, String className) {
         String varName = Constants.VARIABLE_PREFIX + StringUtil.firstToLowerCase(className);
         JCTree tree = (JCTree) trees.getTree(element);

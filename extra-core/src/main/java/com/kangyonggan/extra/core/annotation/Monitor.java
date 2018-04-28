@@ -21,28 +21,28 @@ public @interface Monitor {
     /**
      * monitor app
      *
-     * @return
+     * @return none
      */
     String app() default StringUtil.EXPTY;
 
     /**
      * monitor type
      *
-     * @return
+     * @return none
      */
     String type() default StringUtil.EXPTY;
 
     /**
      * description the monitor
      *
-     * @return
+     * @return none
      */
     String description() default StringUtil.EXPTY;
 
     /**
      * monitor handle, default is console monitor
      *
-     * @return
+     * @return none
      */
     Class<? extends MonitorHandle> handle() default MonitorHandle.class;
 

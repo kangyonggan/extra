@@ -18,28 +18,28 @@ public @interface Enum {
     /**
      * enum's key, can't repetition
      *
-     * @return
+     * @return none
      */
     String key() default "";
 
     /**
      * enum's code
      *
-     * @return
+     * @return none
      */
     String code() default "code";
 
     /**
      * enum's name
      *
-     * @return
+     * @return none
      */
     String name() default "name";
 
     /**
      * enum's description
      *
-     * @return
+     * @return none
      */
     String description() default "";
 

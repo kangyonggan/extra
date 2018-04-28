@@ -5,10 +5,6 @@ import com.kangyonggan.extra.core.util.StringUtil;
 
 import java.util.LinkedHashMap;
 
-/**
- * @author kangyonggan
- * @date 2018/4/27 0027
- */
 public class Demo12 {
 
     public static void main(String[] args) throws Exception {
