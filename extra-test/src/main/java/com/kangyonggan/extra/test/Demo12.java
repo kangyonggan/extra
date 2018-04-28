@@ -1,7 +1,9 @@
 package com.kangyonggan.extra.test;
 
-import com.kangyonggan.extra.core.handle.impl.EnumHandle;
+import com.kangyonggan.extra.core.model.EnumInfo;
 import com.kangyonggan.extra.core.util.StringUtil;
+
+import java.util.LinkedHashMap;
 
 /**
  * @author kangyonggan
@@ -9,12 +11,15 @@ import com.kangyonggan.extra.core.util.StringUtil;
  */
 public class Demo12 {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         String key = StringUtil.firstToLowerCase(PreferenceType.class.getSimpleName());
-        System.out.println(key);
-        System.out.println(EnumHandle.getEnum(key));
-        System.out.println(PreferenceType.ACE.getName());
-        System.out.println(EnumHandle.getEnum(key));
+        EnumInfo enumInfo = MyEnumHandle.getEnumInfo(key);
+
+        LinkedHashMap<Object, Object> map = enumInfo.map();
+        for (Object keys : map.keySet()) {
+            System.out.println(keys);
+            System.out.println(map.get(keys));
+        }
     }
 
 }
