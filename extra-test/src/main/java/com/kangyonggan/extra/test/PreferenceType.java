@@ -12,8 +12,8 @@ public enum PreferenceType {
     /**
      * ace偏好
      */
-    ACE("ace", "Ace Admin的偏好"),
-    USER("user", "用户列表的偏好");
+    ACE("ace", "ace"),
+    USER("user", "user");
 
     private String type;
 
