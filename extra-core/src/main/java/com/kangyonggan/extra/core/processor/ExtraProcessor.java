@@ -16,16 +16,7 @@ import java.util.Set;
  * @author kangyonggan
  * @since 10/31/17
  */
-@SupportedAnnotationTypes({
-        "com.kangyonggan.extra.core.annotation.Valid",
-        "com.kangyonggan.extra.core.annotation.Count",
-        "com.kangyonggan.extra.core.annotation.Frequency",
-        "com.kangyonggan.extra.core.annotation.Cache",
-        "com.kangyonggan.extra.core.annotation.CacheDel",
-        "com.kangyonggan.extra.core.annotation.Log",
-        "com.kangyonggan.extra.core.annotation.Monitor",
-        "com.kangyonggan.extra.core.annotation.Enum"
-})
+@SupportedAnnotationTypes("com.kangyonggan.extra.core.annotation.Valid")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class ExtraProcessor extends AbstractProcessor {
 
