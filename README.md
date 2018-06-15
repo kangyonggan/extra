@@ -6,7 +6,7 @@
 <dependency>
     <groupId>com.kangyonggan</groupId>
     <artifactId>extra-core</artifactId>
-    <version>3.2.1</version>
+    <version>3.2.2</version>
 </dependency>
 ```
 
@@ -132,6 +132,9 @@ monitor.servers=127.0.0.1:9917
 
 #### @Monitor
 1. Monitor The Method! 
+
+#### @Serial
+1. Serial This Class And generate a UUID.
 
 ### Code And Demo
 [https://github.com/kangyonggan/extra.git](https://github.com/kangyonggan/extra.git)

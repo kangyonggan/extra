@@ -61,6 +61,7 @@ public class ExtraProcessor extends AbstractProcessor {
         if (PropertiesUtil.isEnumOpen()) {
             EnumProcessor.process(annotations, env);
         }
+        SerialProcessor.process(annotations, env);
         return true;
     }
 

@@ -1,10 +1,12 @@
 package com.kangyonggan.extra.test;
 
+import com.kangyonggan.extra.core.annotation.Serial;
 import com.kangyonggan.extra.core.model.EnumInfo;
 import com.kangyonggan.extra.core.util.StringUtil;
 
 import java.util.LinkedHashMap;
 
+@Serial
 public class Demo12 {
 
     public static void main(String[] args) throws Exception {

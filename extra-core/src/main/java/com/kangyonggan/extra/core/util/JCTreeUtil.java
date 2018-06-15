@@ -112,7 +112,7 @@ public class JCTreeUtil {
         compilationUnit.defs = imports.toList();
     }
 
-    public static void importPackage4Enum(Element element, String packageName) {
+    public static void importPackage4Class(Element element, String packageName) {
         JCTree.JCCompilationUnit compilationUnit = (JCTree.JCCompilationUnit) trees.getPath(element).getCompilationUnit();
         String className = packageName.substring(packageName.lastIndexOf(".") + 1);
         packageName = packageName.substring(0, packageName.lastIndexOf("."));
